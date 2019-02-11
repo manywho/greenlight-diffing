@@ -5,6 +5,10 @@ import './App.css';
 
 import snapshotA from './snapshotA';
 import snapshotB from './snapshotB';
+import ElementAddition from "./ElementAddition";
+import ElementModification from "./ElementModification";
+import ElementDeletion from "./ElementDeletion";
+import ElementUnknown from "./ElementUnknown";
 
 class App extends Component {
     state = {
@@ -41,22 +45,21 @@ class App extends Component {
         }, { flow: {} });
 
         // Render all the differences into a set of React elements
-        const differences = Object.keys(groupedDiff)
-            .map(groupName => {
-                const groupItems = groupedDiff[groupName];
+        const differences = Object.keys(groupedDiff).map(groupName => {
+            const groupItems = groupedDiff[groupName];
 
-                // For each group (i.e. group of elements in the flow root), we want to render a list of differences
-                const items = Object.keys(groupItems)
-                    .map(groupItem => this.createDiffItem(groupItems, groupItem, groupName));
+            // For each group (i.e. group of elements in the flow root), we want to render a list of differences
+            const items = Object.keys(groupItems)
+                .map(item => this.createDiffItem(groupItems, item, groupName));
 
-                return (
-                    <div>
-                        { groupName }
+            return (
+                <div key={ groupName }>
+                    <h3 className="title">{ App.pluralise(App.createPrettyPathName(groupName)) }</h3>
 
-                        { items }
-                    </div>
-                )
-            });
+                    { items }
+                </div>
+            )
+        });
 
         return (
             <div className="App">
@@ -76,38 +79,22 @@ class App extends Component {
                     // We're adding
                     // console.log('adding', item[0]);
 
-                    return (
-                        <div style={ { background: 'green' } }>
-                            adding a { App.createPrettyPathName(groupName) }: { JSON.stringify(item[0]) }
-                        </div>
-                    );
+                    return <ElementAddition item={ item } groupName={ groupName } key={ key } />;
                 case 2:
                     // We're modifying
                     // console.log('modifying')
 
-                    return (
-                        <div style={ { background: 'skyblue' } }>
-                            modifying { key } from { JSON.stringify(item[0]) } to { JSON.stringify(item[1]) }
-                        </div>
-                    );
+                    return <ElementModification item={ item } key={ key } path={ key } />;
                 case 3:
                     // We're deleting
                     // console.log('deleting', item[0], item[1], item[2])
 
-                    return (
-                        <div style={ { background: 'red' } }>
-                            deleting a { App.createPrettyPathName(groupName) } { JSON.stringify(item[0]) }
-                        </div>
-                    );
+                    return <ElementDeletion item={ item } key={ key } path={ groupName } />;
                 default:
                     // Unknown
                     // console.log('unknown')
 
-                    return (
-                        <div style={ { background: 'yellow' } }>
-                            unknown
-                        </div>
-                    );
+                    return <ElementUnknown />;
             }
         }
 
@@ -129,48 +116,19 @@ class App extends Component {
                 })
 
             } else {
-                // We have an object with changes
+                // We have an object with multiple property changes
                 // console.log('object', item);
 
+                const innerItems = Object.keys(item).map(innerKey => {
+                    return <ElementModification item={ item[innerKey] } key={ innerKey } path={ key + '.' + innerKey } />;
+                });
+
                 return (
-                    <div style={ { background: 'skyblue' } }>
-                        changed item from { JSON.stringify(item[0]) } to { JSON.stringify(item[1]) }
+                    <div key={ key } style={ { background: 'skyblue' } }>
+                        { innerItems }
                     </div>
                 )
             }
-        }
-    }
-
-    static createDiffItem(groupName, d) {
-        const path = d.path.join(".");
-
-        const prettyName = App.createPrettyPathName(path);
-
-        switch (d.kind) {
-            case "A":
-                // An element was added to an array
-                return (
-                    <div style={ { background: 'green' } }>
-                        <p>a new { prettyName } was added at index { d.index }</p>
-
-                        <code> { App.convertSideToRepresentation(d.item.rhs) }</code>
-                    </div>
-                );
-            case "E":
-                return (
-                    <div style={ { background: 'skyblue' } }>
-                        <div>
-                            the { prettyName } changed
-                            from <strong>{ App.convertSideToRepresentation(d.lhs) }</strong> to <strong>{ App.convertSideToRepresentation(d.rhs) }</strong>
-                        </div>
-                    </div>
-                );
-            case "D":
-                return <p style={ { background: 'red' } }>{ path }: deleted</p>;
-            case "N":
-                return <p>newly added property... TODO</p>
-            default:
-                return <p style={ { background: 'yellow' } }>{ path }: unknown</p>;
         }
     }
 
@@ -182,8 +140,6 @@ class App extends Component {
                 return "flow modification date";
             case "developerName":
                 return "flow name";
-            case "flow":
-                return "flow";
             case "id.id":
                 return "flow ID";
             case "id.versionId":
@@ -219,43 +175,6 @@ class App extends Component {
                 console.warn("An unknown path was encountered:", path);
 
                 return path;
-        }
-    }
-
-    static convertSideToRepresentation(side) {
-        if (side === null) {
-            return <span>null</span>
-        }
-
-        switch (true) {
-            case side instanceof Array:
-                const items = side.map((item, index) => {
-                    return (
-                        <div>
-                            [{ index }]: { JSON.stringify(item) }
-                        </div>
-                    );
-                });
-
-                return (
-                    <div>
-                        <h4>array</h4>
-
-                        { items }
-                    </div>
-                );
-            case side instanceof Object:
-                return JSON.stringify(side);
-            default:
-                if (side.trim() === '') {
-                    return (
-                        <span>
-                            <i>empty string</i>
-                        </span>
-                    )
-                }
-
-                return side;
         }
     }
 
