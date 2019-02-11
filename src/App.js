@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { diff, observableDiff } from 'deep-diff';
+import { DiffPatcher } from 'jsondiffpatch';
 
 import './App.css';
 
@@ -17,91 +17,128 @@ class App extends Component {
     }
 
     render() {
-        let arrayItems = [];
-
-        let finalItems = [];
-
-        const theDiff = observableDiff(snapshotA, snapshotB, function (item) {
-            console.log(item);
-            finalItems.push(item);
-        }, {
-            normalize: (path, key, lhs, rhs) => {
-                if (typeof key === 'number') {
-                    console.log('aaaaaaaaaa');
-                    return false;
-                    if (lhs.id === rhs.id) {
-                        return true
-                    } else {
-                        return false;
-                    }
-
-                    // console.log('aaaa');
-                    // console.table(lhs, rhs);
+        const diffPatcher = new DiffPatcher({
+            objectHash: function (obj) {
+                // We want to hash the objects by ID, if there is a field called "id"
+                if (Object.hasOwnProperty('id')) {
+                    return obj.id;
                 }
 
-
-                // if (path instanceof Array) {
-                //     const finalKey = path[path.length - 1];
-                //
-                //     if (isNaN(finalKey) === false) {
-                //         // console.log(path, key);
-                //
-                //         const pathString = path.join('.');
-                //
-                //         // If the
-                //         if (key === 'id' && arrayItems.includes(pathString)) {
-                //
-                //         }
-                //     }
-                // }
-
-                return [lhs, rhs];
+                return obj;
             }
         });
 
-        const groupedDiff = App.groupBy(theDiff, function (item) {
-            // We only want to group element things
-            if (item.path) {
-                const firstPathSegment = item.path[0];
+        const diff = diffPatcher.diff(snapshotA, snapshotB);
 
-                if (['groupElements', 'macroElements', 'mapElements', 'navigationElements', 'pageElements', 'serviceElements', 'tagElements', 'typeElements', 'valueElements'].includes(firstPathSegment)) {
-                    return firstPathSegment;
-                }
+        const groupedDiff = Object.keys(diff).reduce((output, value) => {
+            if (['groupElements', 'macroElements', 'mapElements', 'navigationElements', 'pageElements', 'serviceElements', 'tagElements', 'typeElements', 'valueElements'].includes(value)) {
+                output[value] = diff[value];
+            } else {
+                output.flow[value] = diff[value];
             }
 
-            // Anything that is part of the flow document itself should go into a "flow" group
-            return 'flow';
-        });
+            return output;
+        }, { flow: {} });
 
-        const differences = Object.keys(groupedDiff).flatMap((group) => {
-            const items = groupedDiff[group]
-                .sort((a, b) => {
-                    if (a.index && b.index) {
-                        return a.index > b.index;
-                    }
+        // Render all the differences into a set of React elements
+        const differences = Object.keys(groupedDiff)
+            .map(groupName => {
+                const groupItems = groupedDiff[groupName];
 
-                    return a > b;
-                })
-                .map(d => App.createDiffItem(group, d));
+                // For each group (i.e. group of elements in the flow root), we want to render a list of differences
+                const items = Object.keys(groupItems)
+                    .map(groupItem => this.createDiffItem(groupItems, groupItem, groupName));
 
+                return (
+                    <div>
+                        { groupName }
 
-            return (
-                <div>
-                    <h4>{ App.pluralise(App.createPrettyPathName(group)) }</h4>
-
-                    { items }
-                </div>
-            )
-        });
-
-        // console.log(groupedDiff);
-        // console.log(groupedDiff);
+                        { items }
+                    </div>
+                )
+            });
 
         return (
             <div className="App">
                 { differences }
             </div>
         );
+    }
+
+    createDiffItem(things, key, groupName) {
+        const item = things[key];
+
+        if (item instanceof Array) {
+            // We're either adding, modifying or deleting
+
+            switch (item.length) {
+                case 1:
+                    // We're adding
+                    // console.log('adding', item[0]);
+
+                    return (
+                        <div style={ { background: 'green' } }>
+                            adding a { App.createPrettyPathName(groupName) }: { JSON.stringify(item[0]) }
+                        </div>
+                    );
+                case 2:
+                    // We're modifying
+                    // console.log('modifying')
+
+                    return (
+                        <div style={ { background: 'skyblue' } }>
+                            modifying { key } from { JSON.stringify(item[0]) } to { JSON.stringify(item[1]) }
+                        </div>
+                    );
+                case 3:
+                    // We're deleting
+                    // console.log('deleting', item[0], item[1], item[2])
+
+                    return (
+                        <div style={ { background: 'red' } }>
+                            deleting a { App.createPrettyPathName(groupName) } { JSON.stringify(item[0]) }
+                        </div>
+                    );
+                default:
+                    // Unknown
+                    // console.log('unknown')
+
+                    return (
+                        <div style={ { background: 'yellow' } }>
+                            unknown
+                        </div>
+                    );
+            }
+        }
+
+        if (item instanceof Object) {
+            // We either have an object or an array with inner changes
+
+            if (item._t === 'a') {
+                // We have an array with changes
+                // console.log('array');
+
+                Object.keys(item).forEach(innerKey => {
+                    const innerItem = item[innerKey];
+
+                    if (isNaN(innerKey)) {
+                        // This item was either removed, or moved
+                    } else {
+                        // This is a new item
+                    }
+                })
+
+            } else {
+                // We have an object with changes
+                // console.log('object', item);
+
+                return (
+                    <div style={ { background: 'skyblue' } }>
+                        changed item from { JSON.stringify(item[0]) } to { JSON.stringify(item[1]) }
+                    </div>
+                )
+            }
+        }
     }
 
     static createDiffItem(groupName, d) {
@@ -123,7 +160,8 @@ class App extends Component {
                 return (
                     <div style={ { background: 'skyblue' } }>
                         <div>
-                            the { prettyName } changed from <strong>{ App.convertSideToRepresentation(d.lhs) }</strong> to <strong>{ App.convertSideToRepresentation(d.rhs) }</strong>
+                            the { prettyName } changed
+                            from <strong>{ App.convertSideToRepresentation(d.lhs) }</strong> to <strong>{ App.convertSideToRepresentation(d.rhs) }</strong>
                         </div>
                     </div>
                 );
@@ -219,14 +257,6 @@ class App extends Component {
 
                 return side;
         }
-    }
-
-    static groupBy(xs, key) {
-        return xs.reduce(function (rv, x) {
-            var v = key instanceof Function ? key(x) : x[key];
-            (rv[v] = rv[v] || []).push(x);
-            return rv;
-        }, {});
     }
 
     /**
