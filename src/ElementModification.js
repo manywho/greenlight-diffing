@@ -16,6 +16,10 @@ function renderChange(value) {
         return JSON.stringify(value);
     }
 
+    if (value.trim() === "") {
+        return <i>empty string</i>;
+    }
+
     return value;
 }
 
