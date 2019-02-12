@@ -1,9 +1,9 @@
 import React from 'react';
 import { createPrettyPathName } from './Paths';
 
-const ElementAddition = ({ groupName, item }) => (
-    <div style={ { background: 'green' } }>
-        adding a { createPrettyPathName(groupName) }: { JSON.stringify(item[0]) }
+const ElementAddition = ({ path, item }) => (
+    <div className="bg-success">
+        adding a { createPrettyPathName(path) }: { JSON.stringify(item[0]) }
     </div>
 );
 

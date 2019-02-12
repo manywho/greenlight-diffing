@@ -34,13 +34,36 @@
       "developerSummary": null,
       "elementType": "START",
       "groupElementId": null,
-      "id": "b2e0de38-680d-47de-a60e-81c30f607c1a",
+      "id": "b02b9241-8260-4428-9149-b7c54a190142",
       "listeners": null,
       "messageActions": null,
       "navigationOverrides": null,
       "notAuthorizedMessage": "",
       "operations": null,
-      "outcomes": null,
+      "outcomes": [
+        {
+          "attributes": null,
+          "comparison": null,
+          "controlPoints": [
+            {
+              "x": 123,
+              "y": 456
+            }
+          ],
+          "developerName": "Go",
+          "developerSummary": null,
+          "flowOut": null,
+          "id": "64a16da9-a69b-4e56-bec0-c5b5deae2d46",
+          "isBulkAction": false,
+          "label": "",
+          "nextMapElementDeveloperName": null,
+          "nextMapElementId": "f681e254-74d3-4ae3-94ce-d669ba6d169d",
+          "order": 0,
+          "pageActionBindingType": "NO_SAVE",
+          "pageActionType": "",
+          "pageObjectBindingId": null
+        }
+      ],
       "pageElementId": null,
       "postUpdateMessage": "",
       "postUpdateToStream": false,

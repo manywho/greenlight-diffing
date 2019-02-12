@@ -22,11 +22,78 @@ class App extends Component {
 
     }
 
+    createDiffItem(groupName, key, item) {
+        if (item === null) {
+            return null;
+        }
+
+        if (item instanceof Array) {
+            // We're either adding, modifying or deleting
+
+            switch (item.length) {
+                case 1:
+                    // We're adding
+                    return <ElementAddition item={ item } key={ key } path={ groupName } />;
+                case 2:
+                    // We're modifying
+                    return <ElementModification item={ item } key={ key } path={ key } />;
+                case 3:
+                    // We're deleting
+                    return <ElementDeletion item={ item } key={ key } path={ groupName } />;
+                default:
+                    // Unknown
+                    return <ElementUnknown />;
+            }
+        }
+
+        if (item instanceof Object || typeof item === 'number') {
+            // We either have an object or an array with inner changes
+
+            if (item._t === 'a') {
+                // We have an array with changes
+                return Object.entries(item)
+                    .filter(([innerKey]) => innerKey !== '_t')
+                    .map(([innerKey, innerItem]) => {
+                        if (innerItem instanceof Array || isNaN(innerKey)) {
+                            // This item was either removed, or moved
+                            return this.createDiffItem(groupName, innerKey, innerItem);
+                        }
+
+                        // This is a new item change
+                        return this.createObjectDiffItem(key, innerItem);
+                    })
+
+            }
+
+            // We have an object with multiple property changes
+            return this.createObjectDiffItem(key, item);
+        }
+
+        // Otherwise, we have plain items (?)
+        return null
+    }
+
+    createObjectDiffItem(key, item) {
+        const innerItems = Object.entries(item).map(([innerKey, innerValue]) => {
+            return <li key={ innerKey }>{ this.createDiffItem(key + '.' + innerKey, innerKey, innerValue) }</li>
+        });
+
+        return (
+            <div key={ key } style={ { background: 'skyblue' } }>
+                <h4>{ key }</h4>
+
+                <ul>
+                    { innerItems }
+                </ul>
+            </div>
+        )
+    }
+
     render() {
         const diffPatcher = new DiffPatcher({
             objectHash: function (obj) {
                 // We want to hash the objects by ID, if there is a field called "id"
-                if (Object.hasOwnProperty('id')) {
+                if (obj.id) {
                     return obj.id;
                 }
 
@@ -64,60 +131,10 @@ class App extends Component {
         });
 
         return (
-            <div className="App">
+            <div className="container">
                 { differences }
             </div>
         );
-    }
-
-    createDiffItem(groupName, key, item) {
-        if (item instanceof Array) {
-            // We're either adding, modifying or deleting
-
-            switch (item.length) {
-                case 1:
-                    // We're adding
-                    return <ElementAddition item={ item } groupName={ groupName } key={ key } />;
-                case 2:
-                    // We're modifying
-                    return <ElementModification item={ item } key={ key } path={ key } />;
-                case 3:
-                    // We're deleting
-                    return <ElementDeletion item={ item } key={ key } path={ groupName } />;
-                default:
-                    // Unknown
-                    return <ElementUnknown />;
-            }
-        }
-
-        if (item instanceof Object) {
-            // We either have an object or an array with inner changes
-
-            if (item._t === 'a') {
-                // We have an array with changes
-                Object.keys(item).forEach(innerKey => {
-                    const innerItem = item[innerKey];
-
-                    if (isNaN(innerKey)) {
-                        // This item was either removed, or moved
-                    } else {
-                        // This is a new item
-                    }
-                })
-
-            } else {
-                // We have an object with multiple property changes
-                const innerItems = Object.entries(item).map(([innerKey, innerValue]) => {
-                    return <ElementModification item={ innerValue } key={ innerKey } path={ key + '.' + innerKey } />;
-                });
-
-                return (
-                    <div key={ key } style={ { background: 'skyblue' } }>
-                        { innerItems }
-                    </div>
-                )
-            }
-        }
     }
 }
 

@@ -90,7 +90,12 @@
         {
           "attributes": null,
           "comparison": null,
-          "controlPoints": null,
+          "controlPoints": [
+            {
+              "x": 789,
+              "y": 123
+            }
+          ],
           "developerName": "Go",
           "developerSummary": null,
           "flowOut": null,
