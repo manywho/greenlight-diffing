@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { DiffPatcher } from 'jsondiffpatch';
 
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
 import snapshotA from './snapshotA';
 import snapshotB from './snapshotB';
