@@ -23,7 +23,7 @@ class App extends Component {
 
     }
 
-    createDiffItem(groupName, key, item) {
+    createDiffItem(groupName, path, key, item) {
         if (item === null) {
             return null;
         }
@@ -34,13 +34,13 @@ class App extends Component {
             switch (item.length) {
                 case 1:
                     // We're adding
-                    return <ElementAddition item={ item } key={ key } path={ groupName } />;
+                    return <ElementAddition item={ item } key={ key } path={ path } />;
                 case 2:
                     // We're modifying
                     return <ElementModification item={ item } key={ key } path={ key } />;
                 case 3:
                     // We're deleting
-                    return <ElementDeletion item={ item } key={ key } path={ groupName } />;
+                    return <ElementDeletion item={ item } key={ key } path={ path } />;
                 default:
                     // Unknown
                     return <ElementUnknown />;
@@ -51,42 +51,48 @@ class App extends Component {
             // We either have an object or an array with inner changes
 
             if (item._t === 'a') {
+
                 // We have an array with changes
-                return Object.entries(item)
+                const result = Object.entries(item)
                     .filter(([innerKey]) => innerKey !== '_t')
                     .map(([innerKey, innerItem]) => {
+                        // This item was either removed, or moved
                         if (innerItem instanceof Array || isNaN(innerKey)) {
                             // This item was either removed, or moved
-                            return this.createDiffItem(groupName, innerKey, innerItem);
+                            return this.createDiffItem(groupName, path, innerKey, innerItem);
                         }
 
                         // This is a new item change
-                        return this.createObjectDiffItem(key, innerItem);
-                    })
+                        return this.createObjectDiffItem(groupName, path, innerKey, innerItem);
+                    });
+
+                return (
+                    <div key={ key }>
+                        <h4>{ path }</h4>
+
+                        { result }
+                    </div>
+                );
 
             }
 
             // We have an object with multiple property changes
-            return this.createObjectDiffItem(key, item);
+            return this.createObjectDiffItem(groupName, path, key, item);
         }
 
         // Otherwise, we have plain items (?)
         return null
     }
 
-    createObjectDiffItem(key, item) {
+    createObjectDiffItem(groupName, path, key, item) {
         const innerItems = Object.entries(item).map(([innerKey, innerValue]) => {
-            return <li key={ innerKey }>{ this.createDiffItem(key + '.' + innerKey, innerKey, innerValue) }</li>
+            return <li key={ innerKey }>{ this.createDiffItem(groupName, innerKey, innerKey, innerValue) }</li>
         });
 
         return (
-            <div key={ key } style={ { background: 'skyblue' } }>
-                <h4>{ key }</h4>
-
-                <ul>
-                    { innerItems }
-                </ul>
-            </div>
+            <ul key={ key } style={ { background: 'skyblue' } }>
+                { innerItems }
+            </ul>
         )
     }
 
@@ -119,7 +125,7 @@ class App extends Component {
 
             // For each group (i.e. group of elements in the flow root), we want to render a list of differences
             const items = Object.entries(groupItems).map(([itemKey, itemValue]) => {
-                return this.createDiffItem(groupName, itemKey, itemValue)
+                return this.createDiffItem(groupName, groupName, itemKey, itemValue)
             });
 
             return (
