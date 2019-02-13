@@ -23,7 +23,44 @@
   },
   "isActive": true,
   "isDefault": true,
-  "macroElements": null,
+  "macroElements": [
+    {
+      "code": "var value = \"A value in a macro\";",
+      "dateCreated": "2018-11-02T17:08:37.1935788+00:00",
+      "dateModified": "2019-02-11T11:55:18.294416+00:00",
+      "developerName": "Macro",
+      "developerSummary": null,
+      "elementType": "MACRO",
+      "id": "edc3fcf3-e4c3-dc57-278e-1be63cf1d304",
+      "updateByName": false,
+      "whoCreated": null,
+      "whoModified": null,
+      "whoOwner": {
+        "email": "jonjo@jonjomckay.com",
+        "firstName": "Jonjo",
+        "id": "23c8f059-a4f4-4327-bdea-26cb647ba029",
+        "lastName": "McKay"
+      }
+    },
+    {
+      "code": "var value = \"That is deleted\";",
+      "dateCreated": "2018-11-02T17:08:37.1935788+00:00",
+      "dateModified": "2019-02-11T11:55:18.294416+00:00",
+      "developerName": "Macro",
+      "developerSummary": null,
+      "elementType": "MACRO",
+      "id": "ffffffff-e4c3-dc57-278e-1be63cf1d304",
+      "updateByName": false,
+      "whoCreated": null,
+      "whoModified": null,
+      "whoOwner": {
+        "email": "jonjo@jonjomckay.com",
+        "firstName": "Jonjo",
+        "id": "23c8f059-a4f4-4327-bdea-26cb647ba029",
+        "lastName": "McKay"
+      }
+    }
+  ],
   "mapElements": [
     {
       "clearNavigationOverrides": false,
