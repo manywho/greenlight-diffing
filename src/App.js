@@ -23,54 +23,6 @@ class App extends Component {
 
     }
 
-    createDiffItem(elements, path, key, item) {
-
-        const queue = [{path, key, item}];
-
-        while (queue.length > 0) {
-
-            let {path, key, item} = queue.pop();
-
-            if (item instanceof Array) {
-                // We're either adding, modifying or deleting
-
-                switch (item.length) {
-                    case 1:
-                        // We're adding
-                        elements.push(<ElementAddition item={item} key={key} path={path}/>);
-                        break;
-                    case 2:
-                        // We're modifying
-                        elements.push(<ElementModification item={item} key={key} path={key}/>);
-                        break;
-                    case 3:
-                        // We're deleting
-                        elements.push(<ElementDeletion item={item} key={key} path={path}/>);
-                        break;
-                    default:
-                        // Unknown
-                        elements.push(<ElementUnknown/>);
-                }
-
-            } else if (item instanceof Object) {
-
-                // We either have an object or an array with inner changes
-
-                Object.entries(item)
-                    .filter(([innerKey]) => innerKey !== '_t')
-                    .forEach(([innerKey, innerItem]) => {
-                        queue.push({path: path + innerKey, key: innerKey, item: innerItem});
-                    });
-
-            }
-            else {
-                throw new Error("Not expecting that: (typeof item)=" + (typeof item));
-            }
-        }
-
-        return elements;
-    }
-
     render() {
         const diffPatcher = new DiffPatcher({
             objectHash: function (obj) {
@@ -93,24 +45,108 @@ class App extends Component {
             }
 
             return output;
-        }, { flow: {} });
+        }, {flow: {}});
 
 
         // Render all the differences into a set of React elements
-        const elements = [];
+        const queue = [];
+        const rootNode = {level: 0, children: []};
+
+        let childIndex = 0;
         Object.entries(groupedDiff)
             .filter(([groupName]) => groupName !== '_t')
-            .forEach(([groupName, groupItems]) => {
+            .forEach(([key, item]) => {
 
-                // For each group (i.e. group of elements in the flow root), we want to render a list of differences
-                this.createDiffItem(elements, groupName, groupName, groupItems);
+                queue.push({path: key, key, item, treeIndex: [childIndex++]});
+                rootNode.children.push({path: key, children: []});
             });
+
+        while (queue.length > 0) {
+
+            let {path, key, item, treeIndex} = queue.pop();
+            const node = this.findNode(rootNode, treeIndex);
+
+            if (item instanceof Array) {
+                // We're either adding, modifying or deleting
+
+                switch (item.length) {
+                    case 1:
+                        // We're adding
+                        node.element = <ElementAddition item={item} key={key} path={path}/>;
+                        break;
+                    case 2:
+                        // We're modifying
+                        node.element = (<ElementModification item={item} key={key} path={key}/>);
+                        break;
+                    case 3:
+                        // We're deleting
+                        node.element = (<ElementDeletion item={item} key={key} path={path}/>);
+                        break;
+                    default:
+                        // Unknown
+                        node.element = (<ElementUnknown/>);
+                }
+
+            } else if (item instanceof Object) {
+
+                // We either have an object or an array with inner changes
+
+                let childIndex = 0;
+                Object.entries(item)
+                    .filter(([propKey]) => propKey !== '_t')
+                    .forEach(([propKey, propItem]) => {
+
+                        let propPath = path + '.' + propKey;
+
+                        let propTreeIndex = treeIndex.slice();
+                        propTreeIndex.push(childIndex++);
+
+                        queue.push({path: propPath, key: propKey, item: propItem, treeIndex: propTreeIndex});
+                        node.children.push({path: propPath, children: []})
+                    });
+
+            }
+            else {
+                throw new Error("Not expecting that: (typeof item)=" + (typeof item));
+            }
+        }
+
+        const elements = this.createElementTree(rootNode);
 
         return (
             <div className="container">
-                { elements }
+                {elements}
             </div>
         );
+    }
+
+    findNode(root, index) {
+
+        let node = root;
+
+        for(let i = 0 ; i < index.length ; i++) {
+           node = node.children[index[i]];
+        }
+
+        return node;
+    }
+
+    createElementTree(node) {
+
+        if(node.children.length > 0) {
+            const childElements = node.children.map((child) => this.createElementTree(child));
+            return (
+                <div>
+                <h3>{node.path}</h3>
+              <ul>
+                  {childElements}
+              </ul>
+                </div>
+            );
+
+        } else {
+            return node.element;
+        }
     }
 }
 
