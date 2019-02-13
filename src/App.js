@@ -37,23 +37,12 @@ class App extends Component {
 
         const diff = diffPatcher.diff(snapshotA, snapshotB);
 
-        const groupedDiff = Object.entries(diff).reduce((output, [key, value]) => {
-            if (key.toLowerCase().includes('elements')) {
-                output[key] = value;
-            } else {
-                output.flow[key] = value;
-            }
-
-            return output;
-        }, {flow: {}});
-
-
         // Render all the differences into a set of React elements
         const queue = [];
         const rootNode = {level: 0, children: []};
 
         let childIndex = 0;
-        Object.entries(groupedDiff)
+        Object.entries(diff)
             .filter(([groupName]) => groupName !== '_t')
             .forEach(([key, item]) => {
 
@@ -65,6 +54,16 @@ class App extends Component {
 
             let {path, key, item, treeIndex} = queue.pop();
             const node = this.findNode(rootNode, treeIndex);
+
+            // console.log(path);
+            //
+            // const snapshotAObject = this.findByPath(snapshotA, path);
+            // console.log("Snapshot A");
+            // console.log(snapshotAObject);
+            //
+            // const snapshotBObject = this.findByPath(snapshotB, path);
+            // console.log("Snapshot B");
+            // console.log(snapshotBObject);
 
             if (item instanceof Array) {
                 // We're either adding, modifying or deleting
@@ -147,6 +146,25 @@ class App extends Component {
         } else {
             return node.element;
         }
+    }
+
+    findByPath(root, pathStr) {
+
+        const path = pathStr.split(".")
+
+        let node = root;
+
+        for(let i = 0; i < path.length; i++) {
+
+            const currentNode = node[path[i]];
+            if(typeof currentNode === "undefined" || currentNode == null) {
+                return null;
+            }
+
+            node = currentNode;
+        }
+
+        return node;
     }
 }
 
