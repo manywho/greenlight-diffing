@@ -14,6 +14,7 @@ import { createPrettyPathName } from "./Paths";
 import { pluralise } from "./Strings";
 import MapElement from "./MapElement";
 import MacroElement from "./MacroElement";
+import ServiceElement from "./ServiceElement";
 
 class App extends Component {
     state = {
@@ -31,6 +32,8 @@ class App extends Component {
                 // We want to hash the objects by ID, if there is a field called "id"
                 if (obj.id) {
                     return obj.id;
+                } else if (obj.developerName) {
+                    return obj.developerName;
                 }
 
                 return obj;
@@ -63,6 +66,10 @@ class App extends Component {
                 continue;
             } else if (path.startsWith("macroElements.")) {
                 node.element = <MacroElement item={ item } key={ key } original={this.findByPath(snapshotA, path)} />;
+
+                continue;
+            } else if (path.startsWith("serviceElements.")) {
+                node.element = <ServiceElement item={ item } key={ key } original={this.findByPath(snapshotA, path)} />;
 
                 continue;
             }

@@ -181,7 +181,163 @@
   "navigationElements": null,
   "pageElements": null,
   "restrictions": null,
-  "serviceElements": null,
+  "serviceElements": [
+    {
+      "actions": [
+        {
+          "developerName": "Execute Flow",
+          "developerSummary": "Allows authors to execute a Flow.",
+          "isViewMessageAction": false,
+          "serviceActionOutcomes": null,
+          "serviceInputs": [
+            {
+              "contentType": "ContentString",
+              "developerName": "FlowId",
+              "order": 0,
+              "typeElementDeveloperName": null,
+              "typeElementId": null,
+              "valueElementToReferenceDeveloperName": null,
+              "valueElementToReferenceId": null
+            },
+            {
+              "contentType": "ContentString",
+              "developerName": "ExternalIdentifier",
+              "order": 0,
+              "typeElementDeveloperName": null,
+              "typeElementId": null,
+              "valueElementToReferenceDeveloperName": null,
+              "valueElementToReferenceId": null
+            },
+            {
+              "contentType": "ContentBoolean",
+              "developerName": "PassMatchingValuesIntoFlow",
+              "order": 0,
+              "typeElementDeveloperName": null,
+              "typeElementId": null,
+              "valueElementToReferenceDeveloperName": null,
+              "valueElementToReferenceId": null
+            }
+          ],
+          "serviceOutputs": [
+            {
+              "contentType": "ContentObject",
+              "developerName": "State",
+              "order": 0,
+              "typeElementDeveloperName": null,
+              "typeElementId": null,
+              "valueElementToReferenceDeveloperName": null,
+              "valueElementToReferenceId": null
+            }
+          ],
+          "uriPart": "executeflow"
+        },
+        {
+          "developerName": "Assign User Permissions",
+          "developerSummary": "Allows users to assign permissions to other users.",
+          "isViewMessageAction": false,
+          "serviceActionOutcomes": null,
+          "serviceInputs": [
+            {
+              "contentType": "ContentObject",
+              "developerName": "AssignedUserPermissionRequest",
+              "order": 0,
+              "typeElementDeveloperName": null,
+              "typeElementId": null,
+              "valueElementToReferenceDeveloperName": null,
+              "valueElementToReferenceId": null
+            }
+          ],
+          "serviceOutputs": null,
+          "uriPart": "assignuserpermissions"
+        }
+      ],
+      "configurationValues": null,
+      "dateCreated": "2018-03-13T14:41:18.3926454+00:00",
+      "dateModified": "2018-03-13T14:41:18.3926484+00:00",
+      "developerName": "ManyWho Runtime Service",
+      "developerSummary": "",
+      "elementType": "SERVICE",
+      "format": "json",
+      "httpAuthenticationPassword": null,
+      "httpAuthenticationUsername": "",
+      "id": "3e3228fa-a340-4cb4-977d-cea354d2c40f",
+      "install": null,
+      "providesAutoBinding": false,
+      "providesDatabase": true,
+      "providesFiles": false,
+      "providesIdentity": false,
+      "providesLocation": false,
+      "providesLogic": true,
+      "providesSocial": false,
+      "providesViews": false,
+      "sendDecryptedValues": false,
+      "updateByName": false,
+      "uri": "https://staging.manywho.com/plugins/manywho/api/run/1",
+      "version": "1",
+      "whoCreated": {
+        "email": "Jacek_Wojciechowski@Dell.com",
+        "firstName": "Jacek",
+        "id": "b3870875-f9d7-4c3b-9581-a2837937ddb3",
+        "lastName": "Wojciechowski"
+      },
+      "whoModified": {
+        "email": "Jacek_Wojciechowski@Dell.com",
+        "firstName": "Jacek",
+        "id": "b3870875-f9d7-4c3b-9581-a2837937ddb3",
+        "lastName": "Wojciechowski"
+      },
+      "whoOwner": {
+        "email": "Jacek_Wojciechowski@Dell.com",
+        "firstName": "Jacek",
+        "id": "b3870875-f9d7-4c3b-9581-a2837937ddb3",
+        "lastName": "Wojciechowski"
+      }
+    },
+    {
+      "actions": null,
+      "configurationValues": null,
+      "dateCreated": "2018-03-26T11:20:46.6727576+00:00",
+      "dateModified": "2018-03-26T11:20:46.672776+00:00",
+      "developerName": "Demo service",
+      "developerSummary": "",
+      "elementType": "SERVICE",
+      "format": "json",
+      "httpAuthenticationPassword": null,
+      "httpAuthenticationUsername": "admin",
+      "id": "6c1f2fa9-1562-4ad6-970b-c5f92751b375",
+      "install": null,
+      "providesAutoBinding": false,
+      "providesDatabase": true,
+      "providesFiles": false,
+      "providesIdentity": false,
+      "providesLocation": false,
+      "providesLogic": false,
+      "providesSocial": false,
+      "providesViews": false,
+      "sendDecryptedValues": false,
+      "updateByName": false,
+      "uri": "https://services.manywho.com/api/demo/1",
+      "version": "1",
+      "whoCreated": {
+        "email": "Jacek_Wojciechowski@Dell.com",
+        "firstName": "Jacek",
+        "id": "b3870875-f9d7-4c3b-9581-a2837937ddb3",
+        "lastName": "Wojciechowski"
+      },
+      "whoModified": {
+        "email": "Jacek_Wojciechowski@Dell.com",
+        "firstName": "Jacek",
+        "id": "b3870875-f9d7-4c3b-9581-a2837937ddb3",
+        "lastName": "Wojciechowski"
+      },
+      "whoOwner": {
+        "email": "Jacek_Wojciechowski@Dell.com",
+        "firstName": "Jacek",
+        "id": "b3870875-f9d7-4c3b-9581-a2837937ddb3",
+        "lastName": "Wojciechowski"
+      }
+    }
+  ],
   "startMapElementId": "b2e0de38-680d-47de-a60e-81c30f607c1a",
   "stateExpirationLength": 0,
   "tagElements": null,
