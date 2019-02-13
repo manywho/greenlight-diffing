@@ -1,0 +1,56 @@
+
+.modified-attributes{
+    margin-top: 20px;
+    width: 80%;
+    border: 1px solid #cccccc;
+}
+
+
+.node-modified{
+    color: #43ac6a;
+}
+
+.node-deleted{
+    color: #f04124;
+}
+
+.node-new{
+    color: #008cba;
+}
+.node-path{
+    color: #767676;
+}
+
+/* fix for tree bootstrap */
+ul.rc-tree.fixo .rc-tree-node-content-wrapper{
+    height: 25px;
+
+}
+
+/* layout  */
+.menu-diff{
+    margin-top: 30px;
+}
+.menu-diff li span {
+    color: #10639b;
+    font-size: 16px;
+    margin-bottom: 8px;
+    width: 40px;
+    height: 60px;
+}
+.menu-diff li span a{
+    font-weight: bold;
+    color: #1A489B;
+}
+
+.menu-diff .glyphicon {
+    margin-top: 5px;
+    margin-bottom: 4px;
+    font-size: 16px;
+    color: #10639b;
+}
+
+.diff-description-body {
+    color: #10639b;
+    margin-top: 30px;
+}

@@ -15,15 +15,21 @@ import { pluralise } from "./Strings";
 import MapElement from "./MapElement";
 import MacroElement from "./MacroElement";
 import ServiceElement from "./ServiceElement";
+import DiffViewer from "./viewer/DiffViewer";
 
 class App extends Component {
     state = {
         snapshotA: snapshotA,
-        snapshotB: snapshotB
+        snapshotB: snapshotB,
+        viewer: false
     };
 
     componentDidMount() {
+    }
 
+    diffRenderToggle = () => {
+        const newState = !this.state.viewer;
+        this.setState({viewer: newState})
     }
 
     render() {
@@ -128,12 +134,16 @@ class App extends Component {
                 throw new Error("Not expecting that: (typeof item)=" + (typeof item));
             }
         }
-
-        const elements = this.createElementTree(rootNode);
-
+        let diffRender;
+        if (this.state.viewer === false) {
+             diffRender = this.createElementTree(rootNode);
+        } else {
+            diffRender = <DiffViewer/>
+        }
         return (
             <div className="container">
-                {elements}
+                <input type="checkbox" data-toggle="toggle" onClick={this.diffRenderToggle} /><label>Activate Viewer</label>
+                {diffRender}
             </div>
         );
     }
