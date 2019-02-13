@@ -1,15 +1,19 @@
 export function createPrettyPathName(path) {
     switch (path) {
+        case "controlPoints":
+            return "control point";
         case "dateCreated":
-            return "flow creation date";
+            return "creation date";
         case "dateModified":
-            return "flow modification date";
+            return "modification date";
         case "developerName":
-            return "flow name";
-        case "id.id":
-            return "flow ID";
-        case "id.versionId":
-            return "flow version";
+            return "name";
+        case "developerSummary":
+            return "summary";
+        case "id":
+            return "ID";
+        case "versionId":
+            return "version";
         case "groupElements":
             return "group element";
         case "macroElements":
@@ -18,6 +22,8 @@ export function createPrettyPathName(path) {
             return "map element";
         case "navigationElements":
             return "navigation element";
+        case "pageActionBindingType":
+            return "page action binding type";
         case "pageElements":
             return "page element";
         case "serviceElements":

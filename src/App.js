@@ -12,6 +12,7 @@ import ElementDeletion from "./ElementDeletion";
 import ElementUnknown from "./ElementUnknown";
 import { createPrettyPathName } from "./Paths";
 import { pluralise } from "./Strings";
+import MapElement from "./MapElement";
 
 class App extends Component {
     state = {
@@ -54,6 +55,12 @@ class App extends Component {
 
             let {path, key, item, treeIndex} = queue.pop();
             const node = this.findNode(rootNode, treeIndex);
+
+            if (path.startsWith("mapElements.")) {
+                node.element = <MapElement item={ item } key={ key } path={ path } />;
+
+                continue;
+            }
 
             // console.log(path);
             //
