@@ -23,77 +23,52 @@ class App extends Component {
 
     }
 
-    createDiffItem(groupName, path, key, item) {
-        if (item === null) {
-            return null;
-        }
+    createDiffItem(elements, path, key, item) {
 
-        if (item instanceof Array) {
-            // We're either adding, modifying or deleting
+        const queue = [{path, key, item}];
 
-            switch (item.length) {
-                case 1:
-                    // We're adding
-                    return <ElementAddition item={ item } key={ key } path={ path } />;
-                case 2:
-                    // We're modifying
-                    return <ElementModification item={ item } key={ key } path={ key } />;
-                case 3:
-                    // We're deleting
-                    return <ElementDeletion item={ item } key={ key } path={ path } />;
-                default:
-                    // Unknown
-                    return <ElementUnknown />;
-            }
-        }
+        while (queue.length > 0) {
 
-        if (item instanceof Object || typeof item === 'number') {
-            // We either have an object or an array with inner changes
+            let {path, key, item} = queue.pop();
 
-            if (item._t === 'a') {
+            if (item instanceof Array) {
+                // We're either adding, modifying or deleting
 
-                // We have an array with changes
-                const result = Object.entries(item)
+                switch (item.length) {
+                    case 1:
+                        // We're adding
+                        elements.push(<ElementAddition item={item} key={key} path={path}/>);
+                        break;
+                    case 2:
+                        // We're modifying
+                        elements.push(<ElementModification item={item} key={key} path={key}/>);
+                        break;
+                    case 3:
+                        // We're deleting
+                        elements.push(<ElementDeletion item={item} key={key} path={path}/>);
+                        break;
+                    default:
+                        // Unknown
+                        elements.push(<ElementUnknown/>);
+                }
+
+            } else if (item instanceof Object) {
+
+                // We either have an object or an array with inner changes
+
+                Object.entries(item)
                     .filter(([innerKey]) => innerKey !== '_t')
-                    .map(([innerKey, innerItem]) => {
-                        // This item was either removed, or moved
-                        if (innerItem instanceof Array || isNaN(innerKey)) {
-                            // This item was either removed, or moved
-                            return this.createDiffItem(groupName, path, innerKey, innerItem);
-                        }
-
-                        // This is a new item change
-                        return this.createObjectDiffItem(groupName, path, innerKey, innerItem);
+                    .forEach(([innerKey, innerItem]) => {
+                        queue.push({path: path + innerKey, key: innerKey, item: innerItem});
                     });
 
-                return (
-                    <div key={ key }>
-                        <h4>{ path }</h4>
-
-                        { result }
-                    </div>
-                );
-
             }
-
-            // We have an object with multiple property changes
-            return this.createObjectDiffItem(groupName, path, key, item);
+            else {
+                throw new Error("Not expecting that: (typeof item)=" + (typeof item));
+            }
         }
 
-        // Otherwise, we have plain items (?)
-        return null
-    }
-
-    createObjectDiffItem(groupName, path, key, item) {
-        const innerItems = Object.entries(item).map(([innerKey, innerValue]) => {
-            return <li key={ innerKey }>{ this.createDiffItem(groupName, innerKey, innerKey, innerValue) }</li>
-        });
-
-        return (
-            <ul key={ key } style={ { background: 'skyblue' } }>
-                { innerItems }
-            </ul>
-        )
+        return elements;
     }
 
     render() {
@@ -120,26 +95,20 @@ class App extends Component {
             return output;
         }, { flow: {} });
 
+
         // Render all the differences into a set of React elements
-        const differences = Object.entries(groupedDiff).map(([groupName, groupItems]) => {
+        const elements = [];
+        Object.entries(groupedDiff)
+            .filter(([groupName]) => groupName !== '_t')
+            .forEach(([groupName, groupItems]) => {
 
-            // For each group (i.e. group of elements in the flow root), we want to render a list of differences
-            const items = Object.entries(groupItems).map(([itemKey, itemValue]) => {
-                return this.createDiffItem(groupName, groupName, itemKey, itemValue)
+                // For each group (i.e. group of elements in the flow root), we want to render a list of differences
+                this.createDiffItem(elements, groupName, groupName, groupItems);
             });
-
-            return (
-                <div key={ groupName }>
-                    <h3 className="title">{ pluralise(createPrettyPathName(groupName)) }</h3>
-
-                    { items }
-                </div>
-            )
-        });
 
         return (
             <div className="container">
-                { differences }
+                { elements }
             </div>
         );
     }
