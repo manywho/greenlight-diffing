@@ -1,71 +1,159 @@
-import React from 'react';
-import { stringify } from './Strings'
+import React, { Component } from 'react';
+import classNames from 'classnames';
+import { CHANGE_ADDITION, CHANGE_DELETION, CHANGE_MODIFICATION, CHANGE_UNKNOWN, determineChangeType } from "./Diffs";
 import Who from './Who';
 
-import './Element.css'
+export default class MacroElement extends Component {
+    state = {
+        isCollapsed: true
+    };
 
-const MacroElement = ({item: item}) => {
+    onToggleCollapse = () => {
+        this.setState({
+            isCollapsed: !this.state.isCollapsed
+        });
+    };
 
-    let heading, element, className;
-    if (item instanceof Array && item.length === 1) {
-        heading = "New MacroElement";
-        element = item[0];
-        className = 'bg-success';
-    }
-    else if (item.length === 3) {
-        heading = "Removed MacroElement";
-        element = item[0];
-        className = 'bg-secondary';
-    }
-    else if (item instanceof Object) {
-        heading = "Updated MacroElement";
-        element = item;
-        className = 'bg-primary';
-    } else {
-        throw new Error("Invalid item argument");
-    }
-
-    if(element['elementType'] && element['elementType'] !== 'MACRO') {
-        throw new Error("Invalid element type");
-    }
-
-    const rows = Object.keys(element)
-        .filter(propKey => !['dateCreated', 'dateModified', 'elementType'].includes(propKey))
-        .map(propKey => {
-
-            if (element[propKey] instanceof Array && element[propKey].length === 2) {
-                return (<tr key={propKey}>
-                    <td>{propKey}</td>
-                    <td>{createValueElement(element[propKey][0], propKey)}</td>
-                    <td>{createValueElement(element[propKey][1], propKey)}</td>
-                </tr>)
-            }
-            else {
-                return (<tr key={propKey}>
-                    <td>{propKey}</td>
-                    <td>{createValueElement(element[propKey], propKey)}</td>
-                </tr>)
-            }
+    render() {
+        const panelBodyClasses = classNames({
+            'collapse': true,
+            'in': this.state.isCollapsed,
+            'panel-body': true,
+            'panel-collapse': true
         });
 
-    return (
-        <div className={'Element ' + className}>
-            <h4>{heading}</h4>
-            <table>
-                <tbody>
-                {rows}
-                </tbody>
-            </table>
-        </div>)
+        const item = this.props.item;
 
-};
+        let name, element;
 
-export default MacroElement;
+        const changeType = determineChangeType(item);
+
+        switch (changeType) {
+            case CHANGE_ADDITION:
+                name = item[0].developerName;
+                element = item[0];
+                break;
+            case CHANGE_DELETION:
+                name = item[0].developerName;
+                element = item[0];
+                break;
+            case CHANGE_MODIFICATION:
+                name = this.props.original['developerName'];
+                element = item;
+                break;
+            default:
+                break;
+        }
+
+        const panelClasses = classNames({
+            'panel': true,
+            'panel-danger': changeType === CHANGE_DELETION,
+            'panel-default': changeType === CHANGE_UNKNOWN,
+            'panel-info': changeType === CHANGE_MODIFICATION,
+            'panel-success': changeType === CHANGE_ADDITION,
+        });
+
+        if (element['elementType'] && element['elementType'] !== 'MACRO') {
+            throw new Error("Invalid element type");
+        }
+
+        const rows = Object.entries(element)
+            .filter(propKey => !['dateCreated', 'dateModified', 'elementType'].includes(propKey))
+            .map(([key, value]) => {
+
+                switch (changeType) {
+                    case CHANGE_MODIFICATION:
+                        return (<tr key={key}>
+                            <td>{key}</td>
+                            <td>{createValueElement(value[0], key)}</td>
+                            <td>{createValueElement(value[1], key)}</td>
+                        </tr>);
+
+                    default:
+                        return (<tr key={key}>
+                            <td>{key}</td>
+                            <td>{createValueElement(value, key)}</td>
+                        </tr>);
+                }
+            });
+
+        let headerRow;
+        switch (changeType) {
+            case CHANGE_MODIFICATION:
+                headerRow = (
+                    <tr>
+                        <th>Name</th>
+                        <th>Left value</th>
+                        <th>Right value</th>
+                    </tr>
+                );
+                break;
+            default:
+                headerRow = (
+                    <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                    </tr>
+                );
+        }
+
+        return (
+            <div className="panel-group" role="tablist" aria-multiselectable={ false }>
+                <div className={ panelClasses }>
+                    <div className="panel-heading" role="tab">
+                        <h3 className="panel-title">
+                            <a role="button" data-toggle="collapse" aria-expanded="false" onClick={ this.onToggleCollapse }>
+                                Macro Element: <strong>{ name }</strong>
+                            </a>
+
+                            <span className="pull-right">
+                                { changeType }
+                            </span>
+                        </h3>
+                    </div>
+
+                    <div className={ panelBodyClasses } role="tabpanel">
+                        <table className="table">
+                            <thead>
+                            {headerRow}
+                            </thead>
+                            <tbody>
+                            {rows}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
 
 function createValueElement(value, propKey) {
     if (propKey === "whoOwner") {
         return <Who who={value}/>;
     } else {
-        return stringify(value);
+        return renderChange(value);
     }
+}
+
+function renderChange(value) {
+    if (value === null) {
+        return "null";
+    }
+
+    if (typeof value === 'boolean') {
+        return value ? 'true' : 'false';
+    }
+
+    if (value instanceof Object) {
+        return JSON.stringify(value);
+    }
+
+    if (value instanceof String) {
+        if (value.trim() === "") {
+            return <i>empty string</i>;
+        }
+    }
+
+    return value;
 }

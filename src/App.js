@@ -62,7 +62,7 @@ class App extends Component {
 
                 continue;
             } else if (path.startsWith("macroElements.")) {
-                node.element = <MacroElement item={ item } key={ key } path={ path } />;
+                node.element = <MacroElement item={ item } key={ key } original={this.findByPath(snapshotA, path)} />;
 
                 continue;
             }
