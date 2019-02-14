@@ -9,15 +9,18 @@ function handleCustomElement(node, path, key, item, rootPath, snapshotA, snapsho
     // console.log(path);
     // console.log(key);
     // console.log(item);
+    // console.log(rootPath);
 
-    let shouldContinue = false;
+    if (item != null && (rootPath.endsWith(".whoOwner") || rootPath.endsWith(".whoCreated") || rootPath.endsWith(".whoModified"))) {
 
-    if (path.startsWith(".")) {
+        node.element = <Who who={item}/>;
+        return true;
+
+    } else if (path.startsWith(".")) {
+
         node.element = <ServiceAction item={item} key={key} elementTypeName="Action" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
-        shouldContinue = true;
+        return true;
     }
-
-    return shouldContinue;
 }
 
 function validateRootElement(element) {
