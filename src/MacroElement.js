@@ -2,17 +2,14 @@ import React from 'react';
 import { genericComponent, renderBasicValue } from "./GenericComponent";
 import Who from './Who';
 
-function renderProperty(key, value) {
-    if (key === "whoOwner") {
-        return <Who who={value}/>;
-    } else {
-        return renderBasicValue(value);
-    }
+function handleCustomElement(node, path, key, item, rootPath, snapshotA, snapshotB) {
+
+    return false;
 }
 
 function validateRootElement(element) {
     return (typeof element['elementType'] === "undefined") || element['elementType'] === 'MACRO';
 }
 
-const MacroElement = genericComponent(renderProperty, validateRootElement);
+const MacroElement = genericComponent(handleCustomElement, validateRootElement);
 export default MacroElement;

@@ -232,7 +232,7 @@
           "uriPart": "executeflow"
         },
         {
-          "developerName": "Assign User Permissions",
+          "developerName": "Action that will be deleted",
           "developerSummary": "Allows users to assign permissions to other users.",
           "isViewMessageAction": false,
           "serviceActionOutcomes": null,

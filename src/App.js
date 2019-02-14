@@ -176,7 +176,7 @@ class App extends Component {
 
                 shouldContinue = true;
             } else if (path.startsWith(".macroElements.")) {
-                node.element = <MacroElement item={item} key={key} original={findByPath(snapshotA, path)}/>;
+                node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
 
                 shouldContinue = true;
             } else if (path.startsWith(".serviceElements.")) {

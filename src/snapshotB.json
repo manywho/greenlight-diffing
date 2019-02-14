@@ -363,7 +363,7 @@
       "actions": [
         {
           "developerName": "Execute Flow",
-          "developerSummary": "Allows authors to execute a Flow.",
+          "developerSummary": "Updated action",
           "isViewMessageAction": false,
           "serviceActionOutcomes": null,
           "serviceInputs": [
@@ -409,7 +409,7 @@
           "uriPart": "executeflow"
         },
         {
-          "developerName": "Assign User Permissions",
+          "developerName": "New action",
           "developerSummary": "Allows users to assign permissions to other users.",
           "isViewMessageAction": false,
           "serviceActionOutcomes": null,
