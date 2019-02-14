@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { CHANGE_ADDITION, CHANGE_DELETION, CHANGE_MODIFICATION, CHANGE_UNKNOWN, determineChangeType } from "./Diffs";
+import {
+    CHANGE_ADDITION,
+    CHANGE_DELETION,
+    CHANGE_MODIFICATION,
+    CHANGE_NESTED,
+    CHANGE_UNKNOWN,
+    determineChangeType
+} from "./Diffs";
 import { renderDelta, findByPath } from "./App";
 
 export function genericComponent(handleCustomElement, validateRootElement) {
@@ -39,7 +46,7 @@ export function genericComponent(handleCustomElement, validateRootElement) {
                     name = item[0].developerName;
                     element = item[0];
                     break;
-                case CHANGE_MODIFICATION:
+                case CHANGE_NESTED:
                     name = this.lookupDeveloperNameInSnapshots();
                     element = item;
                     break;

@@ -1,6 +1,7 @@
 export const CHANGE_UNKNOWN = "Unknown";
 export const CHANGE_ADDITION = "Added";
 export const CHANGE_MODIFICATION = "Modified";
+export const CHANGE_NESTED = "Nested";
 export const CHANGE_DELETION = "Deleted";
 
 export function determineChangeType(item) {
@@ -8,6 +9,8 @@ export function determineChangeType(item) {
         switch (item.length) {
             case 1:
                 return CHANGE_ADDITION;
+            case 2:
+                return CHANGE_MODIFICATION;
             case 3:
                 return CHANGE_DELETION;
             default:
@@ -16,5 +19,5 @@ export function determineChangeType(item) {
         }
     }
 
-    return CHANGE_MODIFICATION;
+    return CHANGE_NESTED;
 }

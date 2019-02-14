@@ -15,6 +15,7 @@ import { pluralise } from "./Strings";
 import MapElement from "./MapElement";
 import MacroElement from "./MacroElement";
 import ServiceElement from "./ServiceElement";
+import DiffViewer from "./viewer/DiffViewer";
 
 function findNode(root, index) {
 
@@ -144,12 +145,18 @@ export function renderDelta(diff, rootPath, handleCustomElement) {
 class App extends Component {
     state = {
         snapshotA: snapshotA,
-        snapshotB: snapshotB
+        snapshotB: snapshotB,
+        viewer: false
     };
 
     componentDidMount() {
 
     }
+
+    diffRenderToggle = () => {
+        const newState = !this.state.viewer;
+        this.setState({viewer: newState});
+    };
 
     render() {
         const diffPatcher = new DiffPatcher({
@@ -187,9 +194,18 @@ class App extends Component {
             return shouldContinue;
         });
 
+
+        let diffRender;
+        if (this.state.viewer === false) {
+            diffRender = elements;
+        } else {
+            diffRender = <DiffViewer diff={ diff } />
+        }
+
         return (
             <div className="container">
-                {elements}
+                <input type="checkbox" data-toggle="toggle" onClick={this.diffRenderToggle} /><label>Activate Viewer</label>
+                {diffRender}
             </div>
         );
     }
