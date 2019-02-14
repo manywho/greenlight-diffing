@@ -5,6 +5,7 @@ import 'rc-tree/assets/index.css';
 import Tree, { TreeNode } from 'rc-tree';
 import ChangeProperties from './ChangeProperties';
 import { CHANGE_ADDITION, CHANGE_DELETION, CHANGE_MODIFICATION, CHANGE_UNKNOWN, determineChangeType } from '../Diffs';
+import { createPrettyPathName } from "../Paths";
 
 class DiffTree extends Component {
     state = {
@@ -33,27 +34,26 @@ class DiffTree extends Component {
         this.setState({ showDescription: false })
     };
 
-    renderChangeType = (key, value) => {
+    renderChangeType = (key, value, index) => {
+        console.error(key, index);
+
+        const title = createPrettyPathName(key);
+
         switch (determineChangeType(value)) {
             case CHANGE_ADDITION:
-                console.log('added', key, value);
-
-                return <TreeNode title={ key } className="node-new" />;
+                return <TreeNode title={ title } className="node-new" />;
             case CHANGE_DELETION:
-                console.log('deleted', key, value);
-
-                return <TreeNode title={ key } className="node-deleted" />
+                return <TreeNode title={ title } className="node-deleted" />;
             case CHANGE_MODIFICATION:
-                console.log('modified', key, value);
-
-                return <TreeNode title={ key } className="node-modified" />;
+                return <TreeNode title={ title } className="node-modified" />;
             case CHANGE_UNKNOWN:
+                // console.log('unknown', key, value);
                 return null;
             default:
                 if (value._t === "a") {
                     // Excluding _t here seems weird...
-                    const tree = Object.entries(value).filter(([innerKey]) => innerKey !== "_t").map(([innerKey, innerValue]) => {
-                        return this.renderChangeType(innerKey, innerValue);
+                    const tree = Object.entries(value).filter(([innerKey]) => innerKey !== "_t").map(([innerKey, innerValue], innerIndex) => {
+                        return this.renderChangeType(key, innerValue, innerIndex);
                     });
 
                     return (
@@ -62,19 +62,33 @@ class DiffTree extends Component {
                         </TreeNode>
                     )
                 } else {
+                    const tree = Object.entries(value).filter(([innerKey]) => innerKey !== "_t").map(([innerKey, innerValue], innerIndex) => {
+                        return this.renderChangeType(innerKey, innerValue, innerIndex);
+                    });
+
                     return (
-                        <TreeNode title={ key } className="node-modified">
-                            { this.renderTree(value) }
+                        <TreeNode title={ index } className="node-modified">
+                            { tree }
                         </TreeNode>
+
                     )
                 }
         }
     };
 
-    renderTree = (diff) => {
-        return Object.entries(diff).map(([key, value]) => {
-            return this.renderChangeType(key, value);
-        });
+    renderTree = (diff, selectedElementType) => {
+        console.warn(diff);
+
+        let nodes;
+        if (diff instanceof Array) {
+            nodes = this.renderChangeType(selectedElementType, diff, 0);
+        } else {
+            nodes = Object.entries(diff).filter(([innerKey]) => innerKey !== "_t").map(([key, value], index) => {
+                return this.renderChangeType(key, value, index);
+            });
+        }
+
+        return <Tree>{ nodes }</Tree>
     };
 
     render() {
@@ -102,53 +116,51 @@ class DiffTree extends Component {
             showNode = none;
         }
 
-        console.log(this.props.diff);
-
-        const tree = this.renderTree(this.props.diff);
+        const tree = this.props.selectedElementType
+            ? this.renderTree(this.props.diff[this.props.selectedElementType], this.props.selectedElementType)
+            : <div>nothing selected</div>;
 
         return (
             <div className="row">
                 <div className="col-sm">
-                    <Tree>
                     { tree }
-                    </Tree>
 
-                    <Tree onSelect={ this.onSelect }
-                          defaultExpandAll showLine={ false } showIcon={ false } className={ "fixo" }>
-                        <TreeNode title="Course Registration Flow" key="0-1" className={ "node-modified" }>
+                    {/*<Tree onSelect={ this.onSelect }*/}
+                          {/*defaultExpandAll showLine={ false } showIcon={ false } className={ "fixo" }>*/}
+                        {/*<TreeNode title="Course Registration Flow" key="0-1" className={ "node-modified" }>*/}
 
-                            <TreeNode title="Authorization" disabled={ true } />
-                            <TreeNode title="Group Elements" disabled={ true } />
-                            <TreeNode title="Map Elements" disabled={ true }>
-                                <TreeNode title="Outcomes" key="0-0-0-0" className={ "node-modified" }>
-                                    <TreeNode title="Control Points" className={ "node-deleted" } />
-                                </TreeNode>
-                            </TreeNode>
-                            <TreeNode title="Navigation Elements" disabled={ true } />
-                            <TreeNode title="Page Elements" disabled={ true } />
-                            <TreeNode title="Service Elements" key="0-1-1" selectable={ false } disabled={ true }>
-                                <TreeNode title="Service Element" key="0-0-0-0" className={ "node-modified" } />
-                                <TreeNode title="Service Element" className={ "node-deleted" } />
-                                <TreeNode title="Service Element" className={ "node-new" } />
-                            </TreeNode>
-                            <TreeNode title="Type Elements" disabled={ true } />
-                            <TreeNode title="Tag Elements" disabled={ true } />
-                            <TreeNode title="Value Elements" disabled={ true }>
-                                <TreeNode title="Value Element - US States" key="0-0-0-0" className={ "node-modified" }>
-                                    <TreeNode title="Default ObjectData" className={ "node-deleted" }>
-                                        <TreeNode title={ "Object Data - Drop Down" }>
-                                            <TreeNode title="Properties" className={ "node-deleted" }>
-                                                <TreeNode title="Property - Value" className={ "node-deleted" }>
+                            {/*<TreeNode title="Authorization" disabled={ true } />*/}
+                            {/*<TreeNode title="Group Elements" disabled={ true } />*/}
+                            {/*<TreeNode title="Map Elements" disabled={ true }>*/}
+                                {/*<TreeNode title="Outcomes" key="0-0-0-0" className={ "node-modified" }>*/}
+                                    {/*<TreeNode title="Control Points" className={ "node-deleted" } />*/}
+                                {/*</TreeNode>*/}
+                            {/*</TreeNode>*/}
+                            {/*<TreeNode title="Navigation Elements" disabled={ true } />*/}
+                            {/*<TreeNode title="Page Elements" disabled={ true } />*/}
+                            {/*<TreeNode title="Service Elements" key="0-1-1" selectable={ false } disabled={ true }>*/}
+                                {/*<TreeNode title="Service Element" key="0-0-0-0" className={ "node-modified" } />*/}
+                                {/*<TreeNode title="Service Element" className={ "node-deleted" } />*/}
+                                {/*<TreeNode title="Service Element" className={ "node-new" } />*/}
+                            {/*</TreeNode>*/}
+                            {/*<TreeNode title="Type Elements" disabled={ true } />*/}
+                            {/*<TreeNode title="Tag Elements" disabled={ true } />*/}
+                            {/*<TreeNode title="Value Elements" disabled={ true }>*/}
+                                {/*<TreeNode title="Value Element - US States" key="0-0-0-0" className={ "node-modified" }>*/}
+                                    {/*<TreeNode title="Default ObjectData" className={ "node-deleted" }>*/}
+                                        {/*<TreeNode title={ "Object Data - Drop Down" }>*/}
+                                            {/*<TreeNode title="Properties" className={ "node-deleted" }>*/}
+                                                {/*<TreeNode title="Property - Value" className={ "node-deleted" }>*/}
 
-                                                </TreeNode>
-                                            </TreeNode>
-                                        </TreeNode>
-                                    </TreeNode>
-                                </TreeNode>
-                            </TreeNode>
+                                                {/*</TreeNode>*/}
+                                            {/*</TreeNode>*/}
+                                        {/*</TreeNode>*/}
+                                    {/*</TreeNode>*/}
+                                {/*</TreeNode>*/}
+                            {/*</TreeNode>*/}
 
-                        </TreeNode>
-                    </Tree>
+                        {/*</TreeNode>*/}
+                    {/*</Tree>*/}
                 </div>
                 <div className="col-sm">
                     { showNode }

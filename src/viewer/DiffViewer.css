@@ -6,7 +6,7 @@
 }
 
 
-.node-modified{
+.node-new{
     color: #43ac6a;
 }
 
@@ -14,7 +14,7 @@
     color: #f04124;
 }
 
-.node-new{
+.node-modified{
     color: #008cba;
 }
 .node-path{

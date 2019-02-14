@@ -5,65 +5,47 @@ import 'rc-tree/assets/index.css';
 import DiffTree from "./DiffTree";
 import ChangeProperties from "./ChangeProperties";
 
+const MenuLink = ({ element, icon, onClick, title }) => {
+    return (
+        <li>
+            <a onClick={ () => onClick(element) }>
+                <span className={ "glyphicon glyphicon-" + icon } />
+                <span>{ title }</span>
+            </a>
+        </li>
+    )
+};
+
 class DiffViewer extends Component {
 
     state = {
+        selectedElementType: '',
         showProperties: true
     }
 
 
     closeDescription = () => {
         this.setState({showProperties: false})
-    }
+    };
+
+    onClickMenuLink = (elementType) => {
+        this.setState({
+            selectedElementType: elementType
+        })
+    };
 
 
     render() {
 
-        let mapsLink = <li className=""><span className="glyphicon glyphicon-th"></span><span>Maps</span></li>;
-        let macrosLink = <li className=""><span className="glyphicon glyphicon-cog"></span><span>Macros</span></li>;
-        let servicesLink = <li className=""><span className="glyphicon glyphicon-transfer"></span><span>Services</span></li>;
-        let flowLink = <li className=""><span className="glyphicon glyphicon-leaf"></span><span>Flow</span></li>;
-        let pagesLink = <li className=""><span className="glyphicon glyphicon-record"></span><span>Pages</span></li>;
-        let valuesLink = <li className=""><span className="glyphicon glyphicon-transfer"></span><span>Values</span></li>;
-        let navigationLink = <li className=""><span className="glyphicon glyphicon-object-align-top"></span><span>Navigation</span></li>;
-        let groupsLink = <li className=""><span className="glyphicon glyphicon-tasks"></span><span>Groups</span></li>;
-        let typesLink = <li className=""><span className="glyphicon glyphicon-option-vertical"></span><span>Types</span></li>;
-
-        if(this.props.rootModifications.mapElements) {
-            mapsLink = <li className="active"><span className="glyphicon glyphicon-th"></span><span><a href={"#"}> Maps</a></span></li>;
-        }
-
-        if(this.props.rootModifications.macroElements) {
-            macrosLink = <li className="active"><span className="glyphicon glyphicon-cog"></span><span><a href={"#"}> Macros</a></span></li>
-        }
-
-        if(this.props.rootModifications.serviceElements) {
-            servicesLink = <li className=""><span className="glyphicon glyphicon-transfer"></span><span><a href={"#"}> Services</a></span></li>;
-        }
-
-        if(this.props.rootModifications.flow) {
-            flowLink = <li className="active"><span className="glyphicon glyphicon-th"></span><span><a href={"#"}> Flow</a></span></li>;
-        }
-
-        if(this.props.rootModifications.pagesLink) {
-            pagesLink = <li className=""><span className="glyphicon glyphicon-record"></span><span><a href={"#"}>Pages</a></span></li>;
-        }
-
-        if(this.props.rootModifications.valuesLink) {
-            pagesLink = <li className=""><span className="glyphicon glyphicon-transfer"></span><span><a href={"#"}>Values</a></span></li>;
-        }
-
-        if(this.props.rootModifications.navigationLink) {
-            navigationLink = <li className=""><span className="glyphicon glyphicon-object-align-top"></span><span><a href={"#"}> Navigation</a></span></li>;
-        }
-
-        if(this.props.rootModifications.groupsLink) {
-            groupsLink = <li className=""><span className="glyphicon glyphicon-tasks"></span><span><a href={"#"}> Groups</a></span></li>;
-        }
-
-        if(this.props.rootModifications.typesLink) {
-            typesLink = <li className=""><span className="glyphicon glyphicon-option-vertical"></span><span><a href={"#"}> Types</a></span></li>;
-        }
+        let mapsLink = <MenuLink icon="th" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
+        let macrosLink = <MenuLink icon="cog" title="Macros" element="macroElements" onClick={ this.onClickMenuLink } />;
+        let servicesLink = <MenuLink icon="transfer" title="Service" element="serviceElements" onClick={ this.onClickMenuLink } />;
+        let flowLink = <MenuLink icon="leaf" title="Flow" element="flow" onClick={ this.onClickMenuLink } />;
+        let pagesLink = <MenuLink icon="record" title="Pages" element="pageElements" onClick={ this.onClickMenuLink } />;
+        let valuesLink = <MenuLink icon="transfer" title="Values" element="valueElements" onClick={ this.onClickMenuLink } />;
+        let navigationLink = <MenuLink icon="object-align-top" title="Navigations" element="navigationElements" onClick={ this.onClickMenuLink } />;
+        let groupsLink = <MenuLink icon="tasks" title="Groups" element="groupElements" onClick={ this.onClickMenuLink } />;
+        let typesLink = <MenuLink icon="option-vertical" title="Types" element="typeElements" onClick={ this.onClickMenuLink } />;
 
         return (
             <div className={"container"}>
@@ -91,7 +73,7 @@ class DiffViewer extends Component {
                     <div className={"col-sm-3"}>
                         <h4 className={"diff-description-body"}>Value Modifications</h4>
 
-                        <DiffTree diff={ this.props.diff } />
+                        <DiffTree diff={ this.props.diff } selectedElementType={ this.state.selectedElementType } />
 
                         <div>
                             <p>The differences in the snapshots are shown as follow: <span className={"node-modified"}>Modified Node</span>, <span className={"node-new"}>New Node</span> and <span className={"node-deleted"}>Deleted Node</span>.
