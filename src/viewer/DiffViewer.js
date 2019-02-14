@@ -61,7 +61,7 @@ class DiffViewer extends Component {
                     <div className={"col-sm-9"}><h3 style={{textAlign: "right"}}>2019-02-11 11:13:47 compared to 2019-02-11 12:10:47</h3></div>
                 </div>
                 <div className={"row"}>
-                    <div className={"col-sm-3"}>
+                    <div className={"col-sm-2"}>
                         <ul className="list-unstyled menu-diff">
                             {flowLink}
                             {mapsLink}
@@ -74,15 +74,16 @@ class DiffViewer extends Component {
                             {typesLink}
                         </ul>
                     </div>
-                    <div className={"col-sm-9"}>
+                    <div className={"col-sm-7"} >
+                        <code>API path: values/sfs/sfsf/s/f/s/fs///sf//sf</code>
+                    </div>
+                    <div className={"col-sm-3"}>
                         <h4 className={"diff-description-body"}>Value Modifications</h4>
-
+                        <DiffTree/>
                         <div>
                             <p>The differences in the snapshots are shown as follow: <span className={"node-modified"}>Modified Node</span>, <span className={"node-new"}>New Node</span> and <span className={"node-deleted"}>Deleted Node</span>.
                                 When you have a <span className={"node-path"}>Gray Node</span> it means that that node doesn't have any modification but some of the child have been modified, deleted or created.</p>
                         </div>
-                        <DiffTree/>
-                        <code>API path: values/sfs/sfsf/s/f/s/fs///sf//sf</code>
                     </div>
                 </div>
             </div>
