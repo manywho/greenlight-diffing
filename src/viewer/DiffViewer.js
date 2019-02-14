@@ -4,10 +4,22 @@ import './DiffViewer.css';
 import 'rc-tree/assets/index.css';
 import DiffTree from "./DiffTree";
 import 'bootstrap/dist/css/bootstrap.css';
+import ChangeProperties from "./ChangeProperties";
 
 class DiffViewer extends Component {
 
+    state = {
+        showProperties: true
+    }
+
+
+    closeDescription = () => {
+        this.setState({showProperties: false})
+    }
+
+
     render() {
+
         let mapsLink = <li className=""><span className="glyphicon glyphicon-th"></span><span>Maps</span></li>;
         let macrosLink = <li className=""><span className="glyphicon glyphicon-cog"></span><span>Macros</span></li>;
         let servicesLink = <li className=""><span className="glyphicon glyphicon-transfer"></span><span>Services</span></li>;
@@ -75,7 +87,7 @@ class DiffViewer extends Component {
                         </ul>
                     </div>
                     <div className={"col-sm-7"} >
-                        <code>API path: values/sfs/sfsf/s/f/s/fs///sf//sf</code>
+                        <ChangeProperties visible={this.state.showProperties} closeCallback={this.closeDescription}/>
                     </div>
                     <div className={"col-sm-3"}>
                         <h4 className={"diff-description-body"}>Value Modifications</h4>

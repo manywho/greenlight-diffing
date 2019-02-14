@@ -54,3 +54,11 @@ ul.rc-tree.fixo .rc-tree-node-content-wrapper{
     color: #10639b;
     margin-top: 30px;
 }
+
+.api-path {
+    color: #222222;
+}
+
+.card-properties{
+    margin-top: 30px;
+}
