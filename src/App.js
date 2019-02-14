@@ -46,6 +46,8 @@ class App extends Component {
             }
         });
 
+        const rootModifications = {"mapElements": false, "macroElements": false, "serviceElements": false};
+
         const diff = diffPatcher.diff(snapshotA, snapshotB);
 
         // Render all the differences into a set of React elements
@@ -67,14 +69,17 @@ class App extends Component {
             const node = this.findNode(rootNode, treeIndex);
 
             if (path.startsWith("mapElements.")) {
+                rootModifications.mapElements = true;
                 node.element = <MapElement item={ item } key={ key } path={ path } />;
 
                 continue;
             } else if (path.startsWith("macroElements.")) {
+                rootModifications.macroElements = true;
                 node.element = <MacroElement item={ item } key={ key } original={this.findByPath(snapshotA, path)} />;
 
                 continue;
             } else if (path.startsWith("serviceElements.")) {
+                rootModifications.serviceElements = true;
                 node.element = <ServiceElement item={ item } key={ key } original={this.findByPath(snapshotA, path)} />;
 
                 continue;
@@ -138,7 +143,7 @@ class App extends Component {
         if (this.state.viewer === false) {
              diffRender = this.createElementTree(rootNode);
         } else {
-            diffRender = <DiffViewer/>
+            diffRender = <DiffViewer rootModifications={rootModifications}/>
         }
         return (
             <div className="container">
