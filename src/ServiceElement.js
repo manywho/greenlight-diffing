@@ -21,6 +21,8 @@ function handleCustomElement(node, path, key, item, rootPath, snapshotA, snapsho
         node.element = <ServiceAction item={item} key={key} elementTypeName="Action" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
         return true;
     }
+
+    return false;
 }
 
 function validateRootElement(element) {
