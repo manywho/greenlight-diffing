@@ -34,6 +34,10 @@ class DiffTree extends Component {
         this.setState({ showDescription: false })
     };
 
+    onClickNode = (keys, e) => {
+        this.props.onClickNode(e.node.props.name, e.node.props.value);
+    };
+
     renderChangeType = (key, value, index) => {
         console.error(key, index);
 
@@ -41,11 +45,11 @@ class DiffTree extends Component {
 
         switch (determineChangeType(value)) {
             case CHANGE_ADDITION:
-                return <TreeNode title={ title } className="node-new" />;
+                return <TreeNode name={ key } title={ title } className="node-new" value={ value } />;
             case CHANGE_DELETION:
-                return <TreeNode title={ title } className="node-deleted" />;
+                return <TreeNode name={ key } title={ title } className="node-deleted" value={ value } />;
             case CHANGE_MODIFICATION:
-                return <TreeNode title={ title } className="node-modified" />;
+                return <TreeNode name={ key } title={ title } className="node-modified" value={ value } />;
             case CHANGE_UNKNOWN:
                 // console.log('unknown', key, value);
                 return null;
@@ -57,7 +61,7 @@ class DiffTree extends Component {
                     });
 
                     return (
-                        <TreeNode title={ key }>
+                        <TreeNode name={ key } title={ key } value={ value }>
                             { tree }
                         </TreeNode>
                     )
@@ -67,7 +71,7 @@ class DiffTree extends Component {
                     });
 
                     return (
-                        <TreeNode title={ index } className="node-modified">
+                        <TreeNode name={ key } title={ index } className="node-modified" value={ value }>
                             { tree }
                         </TreeNode>
 
@@ -88,7 +92,7 @@ class DiffTree extends Component {
             });
         }
 
-        return <Tree>{ nodes }</Tree>
+        return <Tree onSelect={ this.onClickNode }>{ nodes }</Tree>
     };
 
     render() {
