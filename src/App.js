@@ -16,6 +16,128 @@ import MapElement from "./MapElement";
 import MacroElement from "./MacroElement";
 import ServiceElement from "./ServiceElement";
 
+function findNode(root, index) {
+
+    let node = root;
+
+    for(let i = 0 ; i < index.length ; i++) {
+        node = node.children[index[i]];
+    }
+
+    return node;
+}
+
+function createElementTree(node) {
+
+    if(node.children.length > 0) {
+        const childElements = node.children.map((child) => createElementTree(child));
+        return (
+            <div>
+                <h3>{node.path}</h3>
+                <ul>
+                    {childElements}
+                </ul>
+            </div>
+        );
+
+    } else {
+        return node.element;
+    }
+}
+
+function findByPath(root, pathStr) {
+
+    const path = pathStr.split(".");
+
+    let node = root;
+
+    for(let i = 0; i < path.length; i++) {
+
+        const currentNode = node[path[i]];
+        if(typeof currentNode === "undefined" || currentNode == null) {
+            return null;
+        }
+
+        node = currentNode;
+    }
+
+    return node;
+}
+
+export function renderDelta(diff, handleCustomElement) {
+    const queue = [{path: "", key: "", item: diff, treeIndex: []}];
+    const rootNode = {level: 0, children: []};
+
+    while (queue.length > 0) {
+
+        let {path, key, item, treeIndex} = queue.pop();
+        const node = findNode(rootNode, treeIndex);
+
+        if(handleCustomElement) {
+            let shouldContinue = handleCustomElement(node, path, key, item);
+            if(shouldContinue) {
+                continue;
+            }
+        }
+
+        if (typeof item === "string") {
+            node.element = <div>{key} : {item}</div>
+        }
+        else if(item === null) {
+            node.element = <div>{key} : null</div>
+        }
+        else if(typeof item === "boolean") {
+            node.element = <div>{key} : {item ? 'true' : 'false'}</div>
+        }
+        else if (item instanceof Array) {
+            // We're either adding, modifying or deleting
+
+            switch (item.length) {
+                case 1:
+                    // We're adding
+                    node.element = <ElementAddition item={item} key={key} path={path}/>;
+                    break;
+                case 2:
+                    // We're modifying
+                    node.element = (<ElementModification item={item} key={key} path={key}/>);
+                    break;
+                case 3:
+                    // We're deleting
+                    node.element = (<ElementDeletion item={item} key={key} path={path}/>);
+                    break;
+                default:
+                    // Unknown
+                    node.element = (<ElementUnknown/>);
+            }
+
+        } else if (item instanceof Object) {
+
+            // We either have an object or an array with inner changes
+
+            let childIndex = 0;
+            Object.entries(item)
+                .filter(([propKey]) => propKey !== '_t')
+                .forEach(([propKey, propItem]) => {
+
+                    let propPath = path + '.' + propKey;
+
+                    let propTreeIndex = treeIndex.slice();
+                    propTreeIndex.push(childIndex++);
+
+                    queue.push({path: propPath, key: propKey, item: propItem, treeIndex: propTreeIndex});
+                    node.children.push({path: propPath, children: []})
+                });
+
+        }
+        else {
+            throw new Error("Not expecting that: (typeof item)=" + (typeof item) + ", item=" + item);
+        }
+    }
+
+    const elements = createElementTree(rootNode);
+    return elements;
+}
+
 class App extends Component {
     state = {
         snapshotA: snapshotA,
@@ -43,147 +165,30 @@ class App extends Component {
         const diff = diffPatcher.diff(snapshotA, snapshotB);
 
         // Render all the differences into a set of React elements
-        const queue = [];
-        const rootNode = {level: 0, children: []};
+        const elements = renderDelta(diff, (node, path, key, item) => {
+            let shouldContinue = false;
 
-        let childIndex = 0;
-        Object.entries(diff)
-            .filter(([groupName]) => groupName !== '_t')
-            .forEach(([key, item]) => {
+            if (path.startsWith(".mapElements.")) {
+                node.element = <MapElement item={item} key={key} path={path}/>;
 
-                queue.push({path: key, key, item, treeIndex: [childIndex++]});
-                rootNode.children.push({path: key, children: []});
-            });
+                shouldContinue = true;
+            } else if (path.startsWith(".macroElements.")) {
+                node.element = <MacroElement item={item} key={key} original={findByPath(snapshotA, path)}/>;
 
-        while (queue.length > 0) {
+                shouldContinue = true;
+            } else if (path.startsWith(".serviceElements.")) {
+                node.element = <ServiceElement item={item} key={key} original={findByPath(snapshotA, path)} elementTypeName="Service Element"/>;
 
-            let {path, key, item, treeIndex} = queue.pop();
-            const node = this.findNode(rootNode, treeIndex);
-
-            if (path.startsWith("mapElements.")) {
-                node.element = <MapElement item={ item } key={ key } path={ path } />;
-
-                continue;
-            } else if (path.startsWith("macroElements.")) {
-                node.element = <MacroElement item={ item } key={ key } original={this.findByPath(snapshotA, path)} />;
-
-                continue;
-            } else if (path.startsWith("serviceElements.")) {
-                node.element = <ServiceElement item={ item } key={ key } original={this.findByPath(snapshotA, path)} />;
-
-                continue;
+                shouldContinue = true;
             }
-
-            // console.log(path);
-            //
-            // const snapshotAObject = this.findByPath(snapshotA, path);
-            // console.log("Snapshot A");
-            // console.log(snapshotAObject);
-            //
-            // const snapshotBObject = this.findByPath(snapshotB, path);
-            // console.log("Snapshot B");
-            // console.log(snapshotBObject);
-
-            if (item instanceof Array) {
-                // We're either adding, modifying or deleting
-
-                switch (item.length) {
-                    case 1:
-                        // We're adding
-                        node.element = <ElementAddition item={item} key={key} path={path}/>;
-                        break;
-                    case 2:
-                        // We're modifying
-                        node.element = (<ElementModification item={item} key={key} path={key}/>);
-                        break;
-                    case 3:
-                        // We're deleting
-                        node.element = (<ElementDeletion item={item} key={key} path={path}/>);
-                        break;
-                    default:
-                        // Unknown
-                        node.element = (<ElementUnknown/>);
-                }
-
-            } else if (item instanceof Object) {
-
-                // We either have an object or an array with inner changes
-
-                let childIndex = 0;
-                Object.entries(item)
-                    .filter(([propKey]) => propKey !== '_t')
-                    .forEach(([propKey, propItem]) => {
-
-                        let propPath = path + '.' + propKey;
-
-                        let propTreeIndex = treeIndex.slice();
-                        propTreeIndex.push(childIndex++);
-
-                        queue.push({path: propPath, key: propKey, item: propItem, treeIndex: propTreeIndex});
-                        node.children.push({path: propPath, children: []})
-                    });
-
-            }
-            else {
-                throw new Error("Not expecting that: (typeof item)=" + (typeof item));
-            }
-        }
-
-        const elements = this.createElementTree(rootNode);
+            return shouldContinue;
+        });
 
         return (
             <div className="container">
                 {elements}
             </div>
         );
-    }
-
-    findNode(root, index) {
-
-        let node = root;
-
-        for(let i = 0 ; i < index.length ; i++) {
-           node = node.children[index[i]];
-        }
-
-        return node;
-    }
-
-    createElementTree(node) {
-
-        if(node.children.length > 0) {
-            const childElements = node.children.map((child) => this.createElementTree(child));
-            return (
-                <div>
-                <h3>{node.path}</h3>
-              <ul>
-                  {childElements}
-              </ul>
-                </div>
-            );
-
-        } else {
-            return node.element;
-        }
-    }
-
-    findByPath(root, pathStr) {
-
-        const path = pathStr.split(".")
-
-        let node = root;
-
-        for(let i = 0; i < path.length; i++) {
-
-            const currentNode = node[path[i]];
-            if(typeof currentNode === "undefined" || currentNode == null) {
-                return null;
-            }
-
-            node = currentNode;
-        }
-
-        return node;
     }
 }
 

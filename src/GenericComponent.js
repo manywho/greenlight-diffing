@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { CHANGE_ADDITION, CHANGE_DELETION, CHANGE_MODIFICATION, CHANGE_UNKNOWN, determineChangeType } from "./Diffs";
+import { renderDelta } from "./App";
 
-export function genericComponent(renderProperty, validateRootElement) {
+export function genericComponent(handleCustomElement, validateRootElement) {
 
     return class extends React.Component {
         state = {
@@ -39,11 +40,15 @@ export function genericComponent(renderProperty, validateRootElement) {
                     element = item[0];
                     break;
                 case CHANGE_MODIFICATION:
-                    name = this.props.original['developerName'];
+                    name = this.props.original ? this.props.original['developerName'] : "???";
                     element = item;
                     break;
                 default:
                     break;
+            }
+
+            if(typeof element === "undefined") {
+                throw new Error("Element is undefined");
             }
 
             const panelClasses = classNames({
@@ -62,41 +67,20 @@ export function genericComponent(renderProperty, validateRootElement) {
                 .filter(propKey => !['dateCreated', 'dateModified', 'elementType'].includes(propKey))
                 .map(([key, value]) => {
 
-                    switch (changeType) {
-                        case CHANGE_MODIFICATION:
-                            return (<tr key={key}>
-                                <td>{key}</td>
-                                <td>{renderProperty(key, value[0])}</td>
-                                <td>{renderProperty(key, value[1])}</td>
-                            </tr>);
+                    // console.log("GenericComponent [key,value]=");
+                    // console.log(key);
+                    // console.log(value);
 
-                        default:
-                            return (<tr key={key}>
-                                <td>{key}</td>
-                                <td>{renderProperty(key, value)}</td>
-                            </tr>);
-                    }
+                    const nestedElements =  renderDelta(value, handleCustomElement);
+
+                    return (<tr key={key}>
+                        <td>{key}</td>
+                        <td>{nestedElements}</td>
+                    </tr>)
+
                 });
 
-            let headerRow;
-            switch (changeType) {
-                case CHANGE_MODIFICATION:
-                    headerRow = (
-                        <tr>
-                            <th>Name</th>
-                            <th>Left value</th>
-                            <th>Right value</th>
-                        </tr>
-                    );
-                    break;
-                default:
-                    headerRow = (
-                        <tr>
-                            <th>Name</th>
-                            <th>Value</th>
-                        </tr>
-                    );
-            }
+            const elementTypeName = this.props.elementTypeName ? this.props.elementTypeName : "???";
 
             return (
                 <div className="panel-group" role="tablist" aria-multiselectable={false}>
@@ -105,7 +89,7 @@ export function genericComponent(renderProperty, validateRootElement) {
                             <h3 className="panel-title">
                                 <a role="button" data-toggle="collapse" aria-expanded="false"
                                    onClick={this.onToggleCollapse}>
-                                    Macro Element: <strong>{name}</strong>
+                                    {elementTypeName}: <strong>{name}</strong>
                                 </a>
 
                                 <span className="pull-right">
@@ -117,7 +101,10 @@ export function genericComponent(renderProperty, validateRootElement) {
                         <div className={panelBodyClasses} role="tabpanel">
                             <table className="table">
                                 <thead>
-                                {headerRow}
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                </tr>
                                 </thead>
                                 <tbody>
                                 {rows}
