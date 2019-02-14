@@ -34,17 +34,16 @@ class DiffViewer extends Component {
         })
     };
 
-
     render() {
-
         let mapsLink = <MenuLink icon="th" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
         let macrosLink = <MenuLink icon="cog" title="Macros" element="macroElements" onClick={ this.onClickMenuLink } />;
         let servicesLink = <MenuLink icon="transfer" title="Service" element="serviceElements" onClick={ this.onClickMenuLink } />;
         let flowLink = <MenuLink icon="leaf" title="Flow" element="flow" onClick={ this.onClickMenuLink } />;
-        let pagesLink = <MenuLink icon="record" title="Pages" element="pageElements" onClick={ this.onClickMenuLink } />;
-        let valuesLink = <MenuLink icon="transfer" title="Values" element="valueElements" onClick={ this.onClickMenuLink } />;
+        let pagesLink = <MenuLink icon="th" title="Pages" element="pageElements" onClick={ this.onClickMenuLink } />;
+        let valuesLink = <MenuLink icon="record" title="Values" element="valueElements" onClick={ this.onClickMenuLink } />;
         let navigationLink = <MenuLink icon="object-align-top" title="Navigations" element="navigationElements" onClick={ this.onClickMenuLink } />;
         let groupsLink = <MenuLink icon="tasks" title="Groups" element="groupElements" onClick={ this.onClickMenuLink } />;
+        let tagsLink = <MenuLink icon="tags" title="Tags" element="tagElements" onClick={ this.onClickMenuLink } />;
         let typesLink = <MenuLink icon="option-vertical" title="Types" element="typeElements" onClick={ this.onClickMenuLink } />;
 
         return (
@@ -64,6 +63,7 @@ class DiffViewer extends Component {
                             {groupsLink}
                             {servicesLink}
                             {macrosLink}
+                            {tagsLink}
                             {typesLink}
                         </ul>
                     </div>
