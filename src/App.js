@@ -10,8 +10,6 @@ import ElementAddition from "./ElementAddition";
 import ElementModification from "./ElementModification";
 import ElementDeletion from "./ElementDeletion";
 import ElementUnknown from "./ElementUnknown";
-import { createPrettyPathName } from "./Paths";
-import { pluralise } from "./Strings";
 import MapElement from "./MapElement";
 import MacroElement from "./MacroElement";
 import ServiceElement from "./ServiceElement";
@@ -143,7 +141,7 @@ class App extends Component {
         if (this.state.viewer === false) {
              diffRender = this.createElementTree(rootNode);
         } else {
-            diffRender = <DiffViewer rootModifications={rootModifications}/>
+            diffRender = <DiffViewer diff={ diff } rootModifications={rootModifications}/>
         }
         return (
             <div className="container">

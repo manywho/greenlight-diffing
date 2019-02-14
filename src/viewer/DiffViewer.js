@@ -3,7 +3,6 @@ import '../App.css';
 import './DiffViewer.css';
 import 'rc-tree/assets/index.css';
 import DiffTree from "./DiffTree";
-import 'bootstrap/dist/css/bootstrap.css';
 import ChangeProperties from "./ChangeProperties";
 
 class DiffViewer extends Component {
@@ -91,7 +90,9 @@ class DiffViewer extends Component {
                     </div>
                     <div className={"col-sm-3"}>
                         <h4 className={"diff-description-body"}>Value Modifications</h4>
-                        <DiffTree/>
+
+                        <DiffTree diff={ this.props.diff } />
+
                         <div>
                             <p>The differences in the snapshots are shown as follow: <span className={"node-modified"}>Modified Node</span>, <span className={"node-new"}>New Node</span> and <span className={"node-deleted"}>Deleted Node</span>.
                                 When you have a <span className={"node-path"}>Gray Node</span> it means that that node doesn't have any modification but some of the child have been modified, deleted or created.</p>
