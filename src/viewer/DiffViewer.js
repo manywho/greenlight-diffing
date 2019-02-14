@@ -35,7 +35,7 @@ class DiffViewer extends Component {
     };
 
     render() {
-        let mapsLink = <MenuLink icon="th" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
+        let mapsLink = <MenuLink icon="globe" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
         let macrosLink = <MenuLink icon="cog" title="Macros" element="macroElements" onClick={ this.onClickMenuLink } />;
         let servicesLink = <MenuLink icon="transfer" title="Service" element="serviceElements" onClick={ this.onClickMenuLink } />;
         let flowLink = <MenuLink icon="leaf" title="Flow" element="flow" onClick={ this.onClickMenuLink } />;
