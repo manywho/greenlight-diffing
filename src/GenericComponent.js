@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { CHANGE_ADDITION, CHANGE_DELETION, CHANGE_MODIFICATION, CHANGE_UNKNOWN, determineChangeType } from "./Diffs";
-import { renderDelta } from "./App";
+import { renderDelta, findByPath } from "./App";
 
 export function genericComponent(handleCustomElement, validateRootElement) {
 
@@ -40,7 +40,7 @@ export function genericComponent(handleCustomElement, validateRootElement) {
                     element = item[0];
                     break;
                 case CHANGE_MODIFICATION:
-                    name = this.props.original ? this.props.original['developerName'] : "???";
+                    name = this.lookupDeveloperNameInSnapshots();
                     element = item;
                     break;
                 default:
@@ -71,7 +71,7 @@ export function genericComponent(handleCustomElement, validateRootElement) {
                     // console.log(key);
                     // console.log(value);
 
-                    const nestedElements =  renderDelta(value, handleCustomElement);
+                    const nestedElements =  renderDelta(value, this.props.rootPath + this.props.relPath + "." + key, handleCustomElement); // todo: there might be a path separator needed
 
                     return (<tr key={key}>
                         <td>{key}</td>
@@ -114,6 +114,42 @@ export function genericComponent(handleCustomElement, validateRootElement) {
                     </div>
                 </div>
             );
+        }
+
+        lookupDeveloperNameInSnapshots() {
+
+            const path = this.props.rootPath + this.props.relPath;
+            // console.log("rootPath=" + this.props.rootPath);
+            // console.log("relPath=" + this.props.relPath);
+            // console.log("path=" + path);
+
+
+            if (path && this.props.snapshotA) {
+
+                const snapshotAElement = findByPath(this.props.snapshotA, path);
+                if (snapshotAElement) {
+                    if (snapshotAElement['developerName']) {
+                        return snapshotAElement['developerName'];
+                    } else {
+                        return "(no developerName)";
+                    }
+                } else if (this.props.snapshotB) {
+                    const snapshotBElement = findByPath(this.props.snapshotB, path);
+                    if (snapshotBElement) {
+                        if (snapshotBElement['developerName']) {
+                            return snapshotBElement['developerName'];
+                        } else {
+                            return "(no developerName)";
+                        }
+                    } else {
+                        return "(object not found in any snapshot)";
+                    }
+                } else {
+                    return "(object not found in any snapshot)";
+                }
+            } else {
+                return "(path or snapshot not provided)";
+            }
         }
     }
 }

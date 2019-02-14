@@ -45,9 +45,12 @@ function createElementTree(node) {
     }
 }
 
-function findByPath(root, pathStr) {
+export function findByPath(root, pathStr) {
 
-    const path = pathStr.split(".");
+    const path = pathStr.substring(1).split(".");
+
+    // console.log("findByPath, path=");
+    // console.log(path);
 
     let node = root;
 
@@ -64,7 +67,7 @@ function findByPath(root, pathStr) {
     return node;
 }
 
-export function renderDelta(diff, handleCustomElement) {
+export function renderDelta(diff, rootPath, handleCustomElement) {
     const queue = [{path: "", key: "", item: diff, treeIndex: []}];
     const rootNode = {level: 0, children: []};
 
@@ -74,7 +77,7 @@ export function renderDelta(diff, handleCustomElement) {
         const node = findNode(rootNode, treeIndex);
 
         if(handleCustomElement) {
-            let shouldContinue = handleCustomElement(node, path, key, item);
+            let shouldContinue = handleCustomElement(node, path, key, item, rootPath, snapshotA, snapshotB);
             if(shouldContinue) {
                 continue;
             }
@@ -165,7 +168,7 @@ class App extends Component {
         const diff = diffPatcher.diff(snapshotA, snapshotB);
 
         // Render all the differences into a set of React elements
-        const elements = renderDelta(diff, (node, path, key, item) => {
+        const elements = renderDelta(diff, "", (node, path, key, item, rootPath) => {
             let shouldContinue = false;
 
             if (path.startsWith(".mapElements.")) {
@@ -177,7 +180,7 @@ class App extends Component {
 
                 shouldContinue = true;
             } else if (path.startsWith(".serviceElements.")) {
-                node.element = <ServiceElement item={item} key={key} original={findByPath(snapshotA, path)} elementTypeName="Service Element"/>;
+                node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
 
                 shouldContinue = true;
             }

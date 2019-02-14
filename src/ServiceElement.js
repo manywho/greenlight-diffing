@@ -3,7 +3,7 @@ import {genericComponent, renderBasicValue} from "./GenericComponent";
 import Who from './Who';
 import ServiceAction from './ServiceAction';
 
-function handleCustomElement(node, path, key, item) {
+function handleCustomElement(node, path, key, item, rootPath, snapshotA, snapshotB) {
 
     // console.log("ServiceElement.handleCustomElement [path, key, item]=");
     // console.log(path);
@@ -13,7 +13,7 @@ function handleCustomElement(node, path, key, item) {
     let shouldContinue = false;
 
     if (path.startsWith(".")) {
-        node.element = <ServiceAction item={item} key={key} original="???"  elementTypeName="Action"/>;
+        node.element = <ServiceAction item={item} key={key} elementTypeName="Action" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
         shouldContinue = true;
     }
 
