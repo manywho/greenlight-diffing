@@ -23,8 +23,8 @@ class DiffViewer extends Component {
         let macrosLink = <li className=""><span className="glyphicon glyphicon-cog"></span><span>Macros</span></li>;
         let servicesLink = <li className=""><span className="glyphicon glyphicon-transfer"></span><span>Services</span></li>;
         let flowLink = <li className=""><span className="glyphicon glyphicon-leaf"></span><span>Flow</span></li>;
-        let pagesLink = <li className=""><span className="glyphicon glyphicon-record"></span><span>Pages</span></li>;
-        let valuesLink = <li className=""><span className="glyphicon glyphicon-transfer"></span><span>Values</span></li>;
+        let pagesLink = <li className=""><span className="glyphicon glyphicon-th"></span><span>Pages</span></li>;
+        let valuesLink = <li className=""><span className="glyphicon glyphicon-record"></span><span>Values</span></li>;
         let navigationLink = <li className=""><span className="glyphicon glyphicon-object-align-top"></span><span>Navigation</span></li>;
         let groupsLink = <li className=""><span className="glyphicon glyphicon-tasks"></span><span>Groups</span></li>;
         let typesLink = <li className=""><span className="glyphicon glyphicon-option-vertical"></span><span>Types</span></li>;
@@ -50,7 +50,7 @@ class DiffViewer extends Component {
         }
 
         if(this.props.rootModifications.valuesLink) {
-            pagesLink = <li className=""><span className="glyphicon glyphicon-transfer"></span><span><a href={"#"}>Values</a></span></li>;
+            valuesLink = <li className=""><span className="glyphicon glyphicon-record"></span><span><a href={"#"}>Values</a></span></li>;
         }
 
         if(this.props.rootModifications.navigationLink) {
