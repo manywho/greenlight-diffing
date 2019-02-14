@@ -45,6 +45,11 @@ class DiffViewer extends Component {
         })
     };
 
+    simplifyDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.getFullYear() + "-" + date.getMonth() + "-"+ date.getDay()+ " "+ date.getHours() +":"+date.getMinutes();
+    }
+
     render() {
         let mapsLink = <MenuLink icon="globe" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
         let macrosLink = <MenuLink icon="cog" title="Macros" element="macroElements" onClick={ this.onClickMenuLink } />;
@@ -85,8 +90,8 @@ class DiffViewer extends Component {
         return (
             <div className={"container"}>
                 <div className={"row"}>
-                    <div className={"col-sm-3"}><h3>Flow Target Name</h3></div>
-                    <div className={"col-sm-9"}><h3 style={{textAlign: "right"}}>2019-02-11 11:13:47 compared to 2019-02-11 12:10:47</h3></div>
+                    <div className={"col-sm-6"}><h3>{this.props.targetTitle}</h3></div>
+                    <div className={"col-sm-6"}><h3 style={{textAlign: "right"}}>{this.simplifyDate(this.props.sourceDate)} compared to {this.simplifyDate(this.props.targetDate)}</h3></div>
                 </div>
                 <div className={"row"}>
                     <div className={"col-sm-2"}>
