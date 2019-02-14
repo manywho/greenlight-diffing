@@ -66,7 +66,7 @@ export default class MapElement extends Component {
                     </div>
 
                     <div className={ panelBodyClasses } role="tabpanel">
-                        <MapElementDiff item={ this.props.item } />
+                        <MapElementDiff item={ this.props.item } path={ this.props.path } />
                     </div>
                 </div>
             </div>
