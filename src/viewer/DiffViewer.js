@@ -5,6 +5,7 @@ import 'rc-tree/assets/index.css';
 import DiffTree from "./DiffTree";
 import ChangeProperties from "./ChangeProperties";
 import { createPrettyPathName } from "../Paths";
+import {renderDelta} from "../App";
 
 const MenuLink = ({ element, icon, onClick, title }) => {
     return (
@@ -105,7 +106,7 @@ class DiffViewer extends Component {
                     <div className={"col-sm-7"} >
                         {/*<ChangeProperties visible={this.state.showProperties} closeCallback={this.closeDescription}/>*/}
                         <div>
-                            from { JSON.stringify(this.state.selectedNodeValue[0]) } to { JSON.stringify(this.state.selectedNodeValue[1]) }
+                            { renderDelta(this.state.selectedNodeValue) }
                         </div>
                     </div>
                     <div className={"col-sm-3"}>
