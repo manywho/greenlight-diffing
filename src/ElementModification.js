@@ -1,9 +1,9 @@
 import React from 'react';
 import { createPrettyPathName } from './Paths';
 
-const ElementModification = (({item, key, rootPath, relPath}) => {
+const ElementModification = (({item, rootPath, relPath}) => {
 
-    console.log(`ElementModification.render, item=${item} key=${key} rootPath=${rootPath} relPath=${relPath}`);
+    console.log(`ElementModification.render, item=${item} rootPath=${rootPath} relPath=${relPath}`);
 
 
     let propertyName = "";
@@ -23,7 +23,7 @@ const ElementModification = (({item, key, rootPath, relPath}) => {
                 </thead>
                 <tbody>
                 <tr>
-                    <tr>{propertyName}</tr>
+                    <td>{propertyName}</td>
                     <td>{renderChange(item[0])}</td>
                     <td>{renderChange(item[1])}</td>
                 </tr>
