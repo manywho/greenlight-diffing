@@ -137,7 +137,7 @@ class DiffViewer extends Component {
             return true;
         }
         else if (selectedNodePath.match(/^mapElements\.[_]?\d$/)) {
-            node.element = <MapElement item={item} key={key} path={path}/>;
+            node.element = <MapElement item={item} key={key} elementTypeName="Map Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
             return true;
         }
         else {
