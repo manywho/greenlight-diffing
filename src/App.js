@@ -91,7 +91,7 @@ export function renderDelta(diff, rootPath, handleCustomElement) {
             }
         }
 
-        if (typeof item === "string") {
+        if (typeof item === "string" || typeof item === "number") {
             node.element = <div>{item}</div>
         }
         else if(item === null) {
