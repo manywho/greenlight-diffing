@@ -159,7 +159,7 @@ class DiffViewer extends Component {
                 // }
             }
 
-            node.element = <div>{childElements}</div>;
+            node.element = <div key={key}>{childElements}</div>;
 
             return true;
         }
@@ -176,7 +176,7 @@ class DiffViewer extends Component {
                                                  snapshotB={snapshotB}/>);
             }
 
-            node.element = <div>{childElements}</div>;
+            node.element = <div key={ key }>{childElements}</div>;
 
             return true;
 
