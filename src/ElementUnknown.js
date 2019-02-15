@@ -1,7 +1,7 @@
 import React from 'react';
 
-const ElementUnknown = () => {
-    console.warn("An unknown change occurred");
+const ElementUnknown = ({ item, key, path }) => {
+    console.warn("An unknown change occurred", item, key, path);
 
     return <div />;
 };

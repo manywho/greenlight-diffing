@@ -114,7 +114,7 @@ export function renderDelta(diff, rootPath, handleCustomElement) {
                     break;
                 default:
                     // Unknown
-                    node.element = (<ElementUnknown/>);
+                    node.element = <ElementUnknown item={ item } key={ key } path={ path } />;
             }
 
         } else if (item instanceof Object) {
