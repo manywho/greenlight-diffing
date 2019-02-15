@@ -117,7 +117,7 @@ class DiffViewer extends Component {
                     </div>
                     <div className={"col-sm-7"} >
                         <div className="wrap">
-                            { renderDelta(this.state.selectedNodeValue, this.state.selectedNodePath, this.handleCustomElement) }
+                            { renderDelta(this.state.selectedNodeValue, this.state.selectedNodePath, this.props.snapshotA, this.props.snapshotB, this.handleCustomElement) }
                         </div>
                     </div>
                     <div className={"col-sm-3"}>

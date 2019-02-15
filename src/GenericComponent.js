@@ -81,7 +81,7 @@ export function genericComponent(handleCustomElement, validateRootElement) {
                     // console.log(key);
                     // console.log(value);
 
-                    const nestedElements =  renderDelta(value, this.props.rootPath + this.props.relPath + "." + key, handleCustomElement); // todo: there might be a path separator needed
+                    const nestedElements =  renderDelta(value, this.props.rootPath + this.props.relPath + "." + key, this.props.snapshotA, this.props.snapshotB, handleCustomElement); // todo: there might be a path separator needed
 
                     return (<tr key={key}>
                         <td>{key}</td>
