@@ -34,7 +34,7 @@ class DiffTree extends Component {
                     });
 
                     return (
-                        <TreeNode key={ path } name={ key } title={ key } value={ value }>
+                        <TreeNode key={ path } name={ key } title={ findName(this.props.snapshotB, path) } value={ value }>
                             { tree }
                         </TreeNode>
                     )
@@ -44,7 +44,7 @@ class DiffTree extends Component {
                     });
 
                     return (
-                        <TreeNode key={ path } name={ key } title={ index } className="node-modified" value={ value }>
+                        <TreeNode key={ path } name={ key } title={ findName(this.props.snapshotB, path) } className="node-modified" value={ value }>
                             { tree }
                         </TreeNode>
 
