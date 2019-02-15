@@ -1,3 +1,5 @@
+import get from 'lodash.get';
+
 export function createPrettyPathName(path) {
     switch (path) {
         case "controlPoints":
@@ -48,4 +50,24 @@ export function createPrettyPathName(path) {
 
             return path;
     }
+}
+
+export function findName(item, path) {
+    // If we encounter a null field, we just want to return an empty string
+    if (item === null) {
+        return "";
+    }
+
+    // If we're given a deleted element path, remove the underscore so we can get the correct original element
+    const explodedPath = path.replace('_', '').split('.');
+
+    let result = get(item, explodedPath);
+    if (result) {
+       if (result.developerName) {
+            return result.developerName;
+        }
+    }
+
+    // Otherwise, fall back to just creating a "pretty" name from the final path segment
+    return createPrettyPathName(explodedPath[explodedPath.length - 1]);
 }

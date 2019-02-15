@@ -48,6 +48,6 @@ ul.rc-tree.fixo .rc-tree-node-content-wrapper {
     color: #10639b;
 }
 
-.viewer .title {
+.viewer > .title {
     color: #10639b;
 }

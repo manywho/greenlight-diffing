@@ -216,7 +216,7 @@ class App extends Component {
         if (this.state.viewer === false) {
             diffRender = elements;
         } else {
-            diffRender = <DiffViewer diff={ diff } targetTitle={snapshotB.developerName} sourceDate={snapshotA.dateModified} targetDate={snapshotB.dateModified}/>
+            diffRender = <DiffViewer diff={ diff } snapshotA={ this.state.snapshotA } snapshotB={ this.state.snapshotB } targetTitle={snapshotB.developerName} sourceDate={snapshotA.dateModified} targetDate={snapshotB.dateModified}/>
         }
 
         return (
