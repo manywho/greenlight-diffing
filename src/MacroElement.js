@@ -1,5 +1,5 @@
 import React from 'react';
-import { genericComponent, renderBasicValue } from "./GenericComponent";
+import { genericComponent } from "./GenericComponent";
 import Who from './Who';
 
 function handleCustomElement(node, path, key, item, rootPath, snapshotA, snapshotB) {
@@ -8,7 +8,7 @@ function handleCustomElement(node, path, key, item, rootPath, snapshotA, snapsho
 
     if (item != null && (rootPath.endsWith(".whoOwner") || rootPath.endsWith(".whoCreated") || rootPath.endsWith(".whoModified"))) {
 
-        node.element = <Who who={item}/>;
+        node.element = <Who who={ item } />;
         return true;
     }
 

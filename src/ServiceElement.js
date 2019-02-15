@@ -1,5 +1,5 @@
 import React from 'react';
-import {genericComponent, renderBasicValue} from "./GenericComponent";
+import { genericComponent } from "./GenericComponent";
 import Who from './Who';
 import ServiceAction from './ServiceAction';
 
@@ -13,12 +13,14 @@ function handleCustomElement(node, path, key, item, rootPath, snapshotA, snapsho
 
     if (item != null && (rootPath.endsWith(".whoOwner") || rootPath.endsWith(".whoCreated") || rootPath.endsWith(".whoModified"))) {
 
-        node.element = <Who who={item}/>;
+        node.element = <Who who={ item } />;
         return true;
 
     } else if (path.startsWith(".")) {
 
-        node.element = <ServiceAction item={item} key={key} elementTypeName="Action" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
+        node.element =
+            <ServiceAction item={ item } key={ key } elementTypeName="Action" rootPath={ rootPath } relPath={ path }
+                           snapshotA={ snapshotA } snapshotB={ snapshotB } />;
         return true;
     }
 

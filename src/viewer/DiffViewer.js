@@ -26,13 +26,7 @@ class DiffViewer extends Component {
     state = {
         selectedElementType: '',
         selectedNodeKey: '',
-        selectedNodeValue: [],
-        showProperties: true
-    };
-
-
-    closeDescription = () => {
-        this.setState({showProperties: false})
+        selectedNodeValue: []
     };
 
     onClickMenuLink = (elementType) => {
