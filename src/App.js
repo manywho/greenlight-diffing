@@ -151,8 +151,8 @@ export function renderDelta(diff, rootPath, snapshotA, snapshotB, handleCustomEl
 
 class App extends Component {
     state = {
-        snapshotA: snapshotA,
-        snapshotB: snapshotB,
+        snapshotA: null,
+        snapshotB: null,
         viewer: true
     };
 
