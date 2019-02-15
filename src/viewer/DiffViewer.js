@@ -32,7 +32,9 @@ class DiffViewer extends Component {
 
     onClickMenuLink = (elementType) => {
         this.setState({
-            selectedElementType: elementType
+            selectedElementType: elementType,
+            selectedNodeKey: '',
+            selectedNodeValue: []
         })
     };
 
