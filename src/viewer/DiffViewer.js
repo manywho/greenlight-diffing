@@ -133,6 +133,8 @@ class DiffViewer extends Component {
 
         const selectedNodePath = this.state.selectedNodePath; //todo: maybe use rootPath and path combination?
         if(!selectedNodePath) {
+            node.element = <div>No changes detected</div>;
+
             return false;
         }
 
