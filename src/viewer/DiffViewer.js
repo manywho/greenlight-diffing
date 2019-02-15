@@ -38,7 +38,7 @@ class DiffViewer extends Component {
         this.setState({
             selectedElementType: elementType,
             selectedNodeKey: '',
-            selectedNodePath: '',
+            selectedNodePath: elementType,
             selectedNodeValue: this.props.diff[elementType]
         })
     };
@@ -140,6 +140,21 @@ class DiffViewer extends Component {
 
         if (selectedNodePath.match(/^macroElements\.[_]?\d$/)) {
             node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
+            return true;
+        }
+        else if (selectedNodePath.match(/^macroElements$/)) {
+
+            const childElements = [];
+            for (let index in item) {
+                // if (Number.isInteger(index)) {
+                    childElements.push(<MacroElement item={item[index]} key={key} elementTypeName="Macro Element"
+                                                     rootPath={rootPath} relPath={path} snapshotA={snapshotA}
+                                                     snapshotB={snapshotB}/>);
+                // }
+            }
+
+            node.element = <div>{childElements}</div>;
+
             return true;
         }
         else if (selectedNodePath.match(/^serviceElements\.[_]?\d$/)) {
