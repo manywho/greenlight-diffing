@@ -92,13 +92,13 @@ export function renderDelta(diff, rootPath, snapshotA, snapshotB, handleCustomEl
         }
 
         if (typeof item === "string" || typeof item === "number") {
-            node.element = <div>{item}</div>
+            node.element = <div key={key}>{item}</div>
         }
         else if(item === null) {
-            node.element = <div>null</div>
+            node.element = <div key={key}>null</div>
         }
         else if(typeof item === "boolean") {
-            node.element = <div>{item ? 'true' : 'false'}</div>
+            node.element = <div key={key}>{item ? 'true' : 'false'}</div>
         }
         else if (item instanceof Array) {
             // We're either adding, modifying or deleting
