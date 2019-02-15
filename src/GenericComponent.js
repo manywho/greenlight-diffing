@@ -23,7 +23,12 @@ export function genericComponent(handleCustomElement, validateRootElement) {
             });
         };
 
+
         render() {
+            return this.renderElement(this.props.item, "no-key");
+        }
+
+        renderElement(item, elementKey) {
             const panelBodyClasses = classNames({
                 'collapse': true,
                 'in': this.state.isCollapsed,
@@ -31,8 +36,7 @@ export function genericComponent(handleCustomElement, validateRootElement) {
                 'panel-collapse': true
             });
 
-            const item = this.props.item;
-            if(item.length === 0) {
+            if(typeof item === "undefined" || item === null || item.length === 0) {
                 return <div>Nothing to render</div>;
             }
 
@@ -50,8 +54,17 @@ export function genericComponent(handleCustomElement, validateRootElement) {
                     element = item[0];
                     break;
                 case CHANGE_NESTED:
-                    name = this.lookupDeveloperNameInSnapshots();
-                    element = item;
+                    if(item['_t'] === 'a') {
+                        const renderedCollection = Object.entries(item)
+                            .filter(([key, value]) => (key !== "_t"))
+                            .map(([key, value]) => this.renderElement(value, key));
+
+                        return <div>{renderedCollection}</div>
+
+                    } else {
+                        name = this.lookupDeveloperNameInSnapshots();
+                        element = item;
+                    }
                     break;
                 default:
                     break;
@@ -93,7 +106,7 @@ export function genericComponent(handleCustomElement, validateRootElement) {
             const elementTypeName = this.props.elementTypeName ? this.props.elementTypeName : "???";
 
             return (
-                <div className="panel-group" role="tablist" aria-multiselectable={false}>
+                <div key={elementKey} className="panel-group" role="tablist" aria-multiselectable={false}>
                     <div className={panelClasses}>
                         <div className="panel-heading" role="tab">
                             <h3 className="panel-title">

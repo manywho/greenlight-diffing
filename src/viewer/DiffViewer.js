@@ -144,58 +144,16 @@ class DiffViewer extends Component {
             return false;
         }
 
-        if (selectedNodePath.match(/^macroElements\.[_]?\d$/)) {
+        if (selectedNodePath.match(/^macroElements\.[_]?\d$/) || selectedNodePath.match(/^macroElements$/)) {
             node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
             return true;
         }
-        else if (selectedNodePath.match(/^macroElements$/)) {
-
-            const childElements = [];
-            for (let index in item) {
-                // if (Number.isInteger(index)) {
-                    childElements.push(<MacroElement item={item[index]} key={key} elementTypeName="Macro Element"
-                                                     rootPath={rootPath} relPath={path} snapshotA={snapshotA}
-                                                     snapshotB={snapshotB}/>);
-                // }
-            }
-
-            node.element = <div key={key}>{childElements}</div>;
-
-            return true;
-        }
-        else if (selectedNodePath.match(/^serviceElements\.[_]?\d$/)) {
+        else if (selectedNodePath.match(/^serviceElements\.[_]?\d$/) || selectedNodePath.match(/^serviceElements/)) {
             node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
             return true;
         }
-        else if (selectedNodePath.match(/^serviceElements$/)) {
-
-            const childElements = [];
-            for (let index in item) {
-                childElements.push(<ServiceElement item={item[index]} key={key} elementTypeName="Service Element"
-                                                 rootPath={rootPath} relPath={path} snapshotA={snapshotA}
-                                                 snapshotB={snapshotB}/>);
-            }
-
-            node.element = <div key={ key }>{childElements}</div>;
-
-            return true;
-
-        }
-        else if (selectedNodePath.match(/^mapElements\.[_]?\d$/)) {
+        else if (selectedNodePath.match(/^mapElements\.[_]?\d$/) || selectedNodePath.match(/^mapElements$/)) {
             node.element = <MapElement item={item} key={key} elementTypeName="Map Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
-            return true;
-        }
-        else if (selectedNodePath.match(/^mapElements/)) {
-
-            const childElements = [];
-            for (let index in item) {
-                childElements.push(<MapElement item={item[index]} key={key} elementTypeName="Map Element"
-                                                   rootPath={rootPath} relPath={path} snapshotA={snapshotA}
-                                                   snapshotB={snapshotB}/>);
-            }
-
-            node.element = <div>{childElements}</div>;
-
             return true;
         }
         else {
