@@ -141,7 +141,7 @@ export function renderDelta(diff, rootPath, snapshotA, snapshotB, handleCustomEl
 
         }
         else {
-            throw new Error("Not expecting that: (typeof item)=" + (typeof item) + ", item=" + item);
+            console.error("Not expecting that: (typeof item)=" + (typeof item) + ", item=" + item);
         }
     }
 
