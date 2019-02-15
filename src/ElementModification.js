@@ -5,16 +5,25 @@ const ElementModification = (({item, key, rootPath, relPath}) => {
 
     console.log(`ElementModification.render, item=${item} key=${key} rootPath=${rootPath} relPath=${relPath}`);
 
+
+    let propertyName = "";
+    const relPathArray = relPath.split(".");
+    if(relPathArray && relPathArray.length > 0) {
+       propertyName = relPathArray[relPathArray.length - 1];
+    }
+
     return (
             <table className="bg-info table wrap">
                 <thead>
                 <tr>
+                    <th>Property name</th>
                     <th>Source value</th>
                     <th>Target value</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
+                    <tr>{propertyName}</tr>
                     <td>{renderChange(item[0])}</td>
                     <td>{renderChange(item[1])}</td>
                 </tr>
