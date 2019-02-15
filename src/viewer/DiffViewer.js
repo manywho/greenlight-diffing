@@ -5,15 +5,22 @@ import 'rc-tree/assets/index.css';
 import DiffTree from "./DiffTree";
 import Moment from 'react-moment';
 import { createPrettyPathName } from "../Paths";
-import {renderDelta} from "../App";
+import { renderDelta } from "../App";
+import MapElement from "../MapElement";
+import MacroElement from "../MacroElement";
+import ServiceElement from "../ServiceElement";
 
-const MenuLink = ({ element, icon, onClick, title }) => {
+const MenuLink = ({ active, element, icon, onClick, title }) => {
+    const className = active === element
+        ? ' active'
+        : '';
+
     return (
         <li>
-            <a onClick={ () => onClick(element) }>
+            <button className={ "btn btn-transparent" + className } onClick={ () => onClick(element) }>
                 <span className={ "glyphicon glyphicon-" + icon } />
                 <span>{ title }</span>
-            </a>
+            </button>
         </li>
     )
 };
@@ -23,52 +30,51 @@ class DiffViewer extends Component {
     state = {
         selectedElementType: '',
         selectedNodeKey: '',
-        selectedNodeValue: [],
-        showProperties: true
-    };
-
-
-    closeDescription = () => {
-        this.setState({showProperties: false})
+        selectedNodePath: '',
+        selectedNodeValue: []
     };
 
     onClickMenuLink = (elementType) => {
         this.setState({
-            selectedElementType: elementType
+            selectedElementType: elementType,
+            selectedNodeKey: '',
+            selectedNodePath: '',
+            selectedNodeValue: []
         })
     };
 
-    onClickNode = (key, value) => {
+    onClickNode = (key, value, path) => {
         this.setState({
             selectedNodeKey: key,
+            selectedNodePath: path,
             selectedNodeValue: value
         })
     };
 
     simplifyDate = (dateString) => {
         return <Moment format="D MMM YYYY hh:mm" withTitle>{dateString}</Moment>
-    }
+    };
 
     render() {
-        let mapsLink = <MenuLink icon="globe" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
-        let macrosLink = <MenuLink icon="cog" title="Macros" element="macroElements" onClick={ this.onClickMenuLink } />;
-        let servicesLink = <MenuLink icon="transfer" title="Service" element="serviceElements" onClick={ this.onClickMenuLink } />;
-        let flowLink = <MenuLink icon="leaf" title="Flow" element="flow" onClick={ this.onClickMenuLink } />;
-        let pagesLink = <MenuLink icon="th" title="Pages" element="pageElements" onClick={ this.onClickMenuLink } />;
-        let valuesLink = <MenuLink icon="record" title="Values" element="valueElements" onClick={ this.onClickMenuLink } />;
-        let navigationLink = <MenuLink icon="object-align-top" title="Navigations" element="navigationElements" onClick={ this.onClickMenuLink } />;
-        let groupsLink = <MenuLink icon="tasks" title="Groups" element="groupElements" onClick={ this.onClickMenuLink } />;
-        let tagsLink = <MenuLink icon="tags" title="Tags" element="tagElements" onClick={ this.onClickMenuLink } />;
-        let typesLink = <MenuLink icon="option-vertical" title="Types" element="typeElements" onClick={ this.onClickMenuLink } />;
+        let mapsLink = <MenuLink active={ this.state.selectedElementType } icon="globe" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
+        let macrosLink = <MenuLink active={ this.state.selectedElementType } icon="cog" title="Macros" element="macroElements" onClick={ this.onClickMenuLink } />;
+        let servicesLink = <MenuLink active={ this.state.selectedElementType } icon="transfer" title="Service" element="serviceElements" onClick={ this.onClickMenuLink } />;
+        let flowLink = <MenuLink active={ this.state.selectedElementType } icon="leaf" title="Flow" element="flow" onClick={ this.onClickMenuLink } />;
+        let pagesLink = <MenuLink active={ this.state.selectedElementType } icon="th" title="Pages" element="pageElements" onClick={ this.onClickMenuLink } />;
+        let valuesLink = <MenuLink active={ this.state.selectedElementType } icon="record" title="Values" element="valueElements" onClick={ this.onClickMenuLink } />;
+        let navigationLink = <MenuLink active={ this.state.selectedElementType } icon="object-align-top" title="Navigations" element="navigationElements" onClick={ this.onClickMenuLink } />;
+        let groupsLink = <MenuLink active={ this.state.selectedElementType } icon="tasks" title="Groups" element="groupElements" onClick={ this.onClickMenuLink } />;
+        let tagsLink = <MenuLink active={ this.state.selectedElementType } icon="tags" title="Tags" element="tagElements" onClick={ this.onClickMenuLink } />;
+        let typesLink = <MenuLink active={ this.state.selectedElementType } icon="option-vertical" title="Types" element="typeElements" onClick={ this.onClickMenuLink } />;
 
-        let tree;
+        let tree = null;
 
         if (this.state.selectedElementType) {
             tree = (
-                <div>
-                    <h4 className={"diff-description-body"}>{ createPrettyPathName(this.state.selectedElementType) } Modifications</h4>
+                <div className="viewer">
+                    <h4 className="title text-capitalize">{ createPrettyPathName(this.state.selectedElementType) } Modifications</h4>
 
-                    <DiffTree diff={ this.props.diff } onClickNode={ this.onClickNode } selectedElementType={ this.state.selectedElementType } />
+                    <DiffTree diff={ this.props.diff } onClickNode={ this.onClickNode } selectedElementType={ this.state.selectedElementType } snapshotA={ this.props.snapshotA } snapshotB={ this.props.snapshotB } />
 
                     <div>
                         <p>The differences in the snapshots are shown as follow: <span className={"node-modified"}>Modified Node</span>, <span className={"node-new"}>New Node</span> and <span className={"node-deleted"}>Deleted Node</span>.
@@ -76,15 +82,7 @@ class DiffViewer extends Component {
                     </div>
                 </div>
             )
-        } else {
-            tree = (
-                <div>
-
-                </div>
-            );
         }
-
-        console.log('poop', this.state.selectedNodeValue);
 
         return (
             <div className={"container"}>
@@ -108,9 +106,8 @@ class DiffViewer extends Component {
                         </ul>
                     </div>
                     <div className={"col-sm-7"} >
-                        {/*<ChangeProperties visible={this.state.showProperties} closeCallback={this.closeDescription}/>*/}
                         <div>
-                            { renderDelta(this.state.selectedNodeValue) }
+                            { renderDelta(this.state.selectedNodeValue, this.state.selectedNodePath, this.handleCustomElement) }
                         </div>
                     </div>
                     <div className={"col-sm-3"}>
@@ -119,6 +116,32 @@ class DiffViewer extends Component {
                 </div>
             </div>
         );
+    }
+
+    handleCustomElement = (node, path, key, item, rootPath, snapshotA, snapshotB) => {
+        // console.log(`DiffViewer.handleCustomElement: selectedNodePath=${this.state.selectedNodePath} rootPath=${rootPath} path=${path} key=${key} item=${JSON.stringify(item)}`);
+
+        //todo: maybe use rootPath and path combination?
+        const selectedNodePath = this.state.selectedNodePath;
+
+        if(selectedNodePath.match(/^macroElements\.[_]?\d$/)) {
+            node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
+            return true;
+        } else {
+            return false;
+        }
+        /*switch () {
+            case 'mapElements':
+                node.element = <MapElement item={item} key={key} path={path}/>;
+                return true;
+            case 'macroElements':
+
+            case 'serviceElements':
+                node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
+                return true;
+            default:
+                return false;
+        }*/
     }
 }
 

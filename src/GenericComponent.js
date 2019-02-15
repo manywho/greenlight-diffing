@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import {
     CHANGE_ADDITION,
@@ -32,6 +32,9 @@ export function genericComponent(handleCustomElement, validateRootElement) {
             });
 
             const item = this.props.item;
+            if(item.length === 0) {
+                return <div>Nothing to render</div>;
+            }
 
             let name, element;
 
@@ -123,12 +126,10 @@ export function genericComponent(handleCustomElement, validateRootElement) {
             );
         }
 
-        lookupDeveloperNameInSnapshots() {
+        lookupDeveloperNameInSnapshots() { // todo: shouldn't this be bound?
 
             const path = this.props.rootPath + this.props.relPath;
-            // console.log("rootPath=" + this.props.rootPath);
-            // console.log("relPath=" + this.props.relPath);
-            // console.log("path=" + path);
+            // console.log(`lookupDeveloperNameInSnapshots(): rootPath=${this.props.rootPath} relpath=${this.props.relPath} path=${path}`);
 
 
             if (path && this.props.snapshotA) {

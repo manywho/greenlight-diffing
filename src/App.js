@@ -10,8 +10,6 @@ import ElementAddition from "./ElementAddition";
 import ElementModification from "./ElementModification";
 import ElementDeletion from "./ElementDeletion";
 import ElementUnknown from "./ElementUnknown";
-import { createPrettyPathName } from "./Paths";
-import { pluralise } from "./Strings";
 import MapElement from "./MapElement";
 import MacroElement from "./MacroElement";
 import ServiceElement from "./ServiceElement";
@@ -34,7 +32,7 @@ function createElementTree(node) {
     if(node.children.length > 0) {
         const childElements = node.children.map((child) => createElementTree(child));
         return (
-            <div>
+            <div key={ node.path }>
                 <h3>{node.path}</h3>
                 <ul>
                     {childElements}
@@ -49,7 +47,10 @@ function createElementTree(node) {
 
 export function findByPath(root, pathStr) {
 
-    const path = pathStr.substring(1).split(".");
+    if(pathStr.startsWith("."))
+        pathStr = pathStr.substring(1);
+
+    const path = pathStr.split(".");
 
     // console.log("findByPath, path=");
     // console.log(path);
@@ -117,7 +118,7 @@ export function renderDelta(diff, rootPath, handleCustomElement) {
                     break;
                 default:
                     // Unknown
-                    node.element = (<ElementUnknown/>);
+                    node.element = <ElementUnknown item={ item } key={ key } path={ path } />;
             }
 
         } else if (item instanceof Object) {
@@ -198,7 +199,18 @@ class App extends Component {
             }
         });
 
-        const diff = diffPatcher.diff(snapshotA, snapshotB);
+        const originalDiff = diffPatcher.diff(snapshotA, snapshotB);
+
+        const diff = Object.entries(originalDiff).reduce((output, [key, value]) => {
+            if (key.toLowerCase().includes('elements')) {
+                output[key] = value;
+            } else {
+                output.flow[key] = value;
+            }
+
+            return output;
+        }, { flow: {} });
+
 
         // Render all the differences into a set of React elements
         const elements = renderDelta(diff, "", (node, path, key, item, rootPath) => {
@@ -225,7 +237,7 @@ class App extends Component {
         if (this.state.viewer === false) {
             diffRender = elements;
         } else {
-            diffRender = <DiffViewer diff={ diff } targetTitle={snapshotB.developerName} sourceDate={snapshotA.dateModified} targetDate={snapshotB.dateModified}/>
+            diffRender = <DiffViewer diff={ diff } snapshotA={ this.state.snapshotA } snapshotB={ this.state.snapshotB } targetTitle={snapshotB.developerName} sourceDate={snapshotA.dateModified} targetDate={snapshotB.dateModified}/>
         }
 
         return (
