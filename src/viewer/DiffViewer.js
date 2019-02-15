@@ -63,8 +63,8 @@ class DiffViewer extends Component {
 
         if (this.state.selectedElementType) {
             tree = (
-                <div>
-                    <h4 className={"diff-description-body"}>{ createPrettyPathName(this.state.selectedElementType) } Modifications</h4>
+                <div className="viewer">
+                    <h4 className="title">{ createPrettyPathName(this.state.selectedElementType) } Modifications</h4>
 
                     <DiffTree diff={ this.props.diff } onClickNode={ this.onClickNode } selectedElementType={ this.state.selectedElementType } />
 
