@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import snapshotA from './../snapshotA';
 import snapshotB from './../snapshotB';
+import snapshotC from './../snapshotC';
 import './SnapSelector.css';
 
 class SnapSelector extends Component {
@@ -50,6 +51,7 @@ class SnapSelector extends Component {
                         <ul className="list-unstyled menu-sanpshot">
                             <li><span><a className={"selected-source"} onMouseOver={()=> this.setState({overItem: 0})} onMouseLeave={()=> this.setState({overItem: undefined})}  onClick={() => {this.setSnapShot(snapshotA, 0)}}> Snapshot 2019-02-11 11:04:16 {this.renderSelection(0)} </a></span></li>
                             <li><span><a className={"selected-target"} onMouseOver={()=> this.setState({overItem: 1})} onMouseLeave={()=> this.setState({overItem: undefined})}  onClick={() => {this.setSnapShot(snapshotB, 1)}}> Snapshot 2019-02-11 11:55:18 {this.renderSelection(1)} </a></span></li>
+                            <li><span><a className={"selected-target"} onMouseOver={()=> this.setState({overItem: 2})} onMouseLeave={()=> this.setState({overItem: undefined})}  onClick={() => {this.setSnapShot(snapshotC, 2)}}> Snapshot 2019-02-11 12:20:18 {this.renderSelection(2)} </a></span></li>
                         </ul>
                     </div>
             </div>);
