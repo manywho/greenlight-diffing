@@ -16,11 +16,11 @@ const MenuLink = ({ active, element, icon, onClick, title }) => {
         : '';
 
     return (
-        <li>
-            <button className={ "btn btn-transparent" + className } onClick={ () => onClick(element) }>
+        <li className={ className }>
+            <a onClick={ () => onClick(element) }>
                 <span className={ "glyphicon glyphicon-" + icon } />
                 <span>{ title }</span>
-            </button>
+            </a>
         </li>
     )
 };
@@ -85,25 +85,27 @@ class DiffViewer extends Component {
         }
 
         return (
-            <div className={"container"}>
+            <div className={"container-fluid"}>
                 <div className={"row"}>
                     <div className={"col-sm-6"}><h3>{this.props.targetTitle}</h3></div>
                     <div className={"col-sm-6"}><h3 style={{textAlign: "right"}}>{this.simplifyDate(this.props.sourceDate)} compared to {this.simplifyDate(this.props.targetDate)}</h3></div>
                 </div>
                 <div className={"row"}>
                     <div className={"col-sm-2"}>
-                        <ul className="list-unstyled menu-diff">
-                            {flowLink}
-                            {mapsLink}
-                            {pagesLink}
-                            {valuesLink}
-                            {navigationLink}
-                            {groupsLink}
-                            {servicesLink}
-                            {macrosLink}
-                            {tagsLink}
-                            {typesLink}
-                        </ul>
+                        <nav className="navigation elements" role="navigation">
+                            <ul className="nav nav-pills nav-stacked">
+                                { flowLink }
+                                { mapsLink }
+                                { pagesLink }
+                                { valuesLink }
+                                { navigationLink }
+                                { groupsLink }
+                                { servicesLink }
+                                { macrosLink }
+                                { tagsLink }
+                                { typesLink }
+                            </ul>
+                        </nav>
                     </div>
                     <div className={"col-sm-7"} >
                         <div className="wrap">
