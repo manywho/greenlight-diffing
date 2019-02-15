@@ -69,7 +69,7 @@ class DiffViewer extends Component {
         if (this.state.selectedElementType) {
             tree = (
                 <div className="viewer">
-                    <h4 className="title">{ createPrettyPathName(this.state.selectedElementType) } Modifications</h4>
+                    <h4 className="title text-capitalize">{ createPrettyPathName(this.state.selectedElementType) } Modifications</h4>
 
                     <DiffTree diff={ this.props.diff } onClickNode={ this.onClickNode } selectedElementType={ this.state.selectedElementType } snapshotA={ this.props.snapshotA } snapshotB={ this.props.snapshotB } />
 

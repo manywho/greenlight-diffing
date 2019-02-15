@@ -63,7 +63,7 @@ class DiffTree extends Component {
             });
         }
 
-        return <Tree onSelect={ this.onClickNode }>{ nodes }</Tree>
+        return <Tree className="text-capitalize" onSelect={ this.onClickNode }>{ nodes }</Tree>
     };
 
     render() {
