@@ -2,6 +2,10 @@
   text-transform: capitalize;
 }
 
+.wrap {
+  overflow-wrap: break-word;
+}
+
 .btn.btn-transparent {
   color: #333;
   background-color: transparent;

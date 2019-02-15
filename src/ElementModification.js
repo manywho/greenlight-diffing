@@ -2,7 +2,7 @@ import React from 'react';
 import { createPrettyPathName } from './Paths';
 
 const ElementModification = ({ path, item }) => (
-    <div style={ { background: 'skyblue' } }>
+    <div className="bg-info wrap">
         changed <i>{ createPrettyPathName(path) }</i> from <strong>{ renderChange(item[0]) }</strong> to <strong>{ renderChange(item[1]) }</strong>
     </div>
 );

@@ -1,9 +1,9 @@
 import React from 'react';
 
-const ElementUnknown = () => (
-    <div style={ { background: 'yellow' } }>
-        unknown
-    </div>
-);
+const ElementUnknown = () => {
+    console.warn("An unknown change occurred");
+
+    return <div />;
+};
 
 export default ElementUnknown;
