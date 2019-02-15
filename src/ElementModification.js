@@ -13,7 +13,7 @@ function renderChange(value) {
     }
 
     if (value instanceof Object) {
-        return JSON.stringify(value);
+        return JSON.stringify(value, null, 2);
     }
 
     if (value.trim() === "") {

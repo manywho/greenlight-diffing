@@ -3,7 +3,7 @@ import { createPrettyPathName } from './Paths';
 
 const ElementDeletion = ({ path, item }) => (
     <div className="bg-danger wrap">
-        deleting a { createPrettyPathName(path) } { JSON.stringify(item[0]) }
+        deleting a { createPrettyPathName(path) } { JSON.stringify(item[0], null, 2) }
     </div>
 );
 
