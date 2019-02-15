@@ -39,7 +39,7 @@ class DiffViewer extends Component {
             selectedElementType: elementType,
             selectedNodeKey: '',
             selectedNodePath: '',
-            selectedNodeValue: []
+            selectedNodeValue: this.props.diff[elementType]
         })
     };
 
