@@ -3,17 +3,20 @@ import '../App.css';
 import './DiffViewer.css';
 import 'rc-tree/assets/index.css';
 import DiffTree from "./DiffTree";
-import ChangeProperties from "./ChangeProperties";
 import { createPrettyPathName } from "../Paths";
 import {renderDelta} from "../App";
 
-const MenuLink = ({ element, icon, onClick, title }) => {
+const MenuLink = ({ active, element, icon, onClick, title }) => {
+    const className = active === element
+        ? ' active'
+        : '';
+
     return (
         <li>
-            <a onClick={ () => onClick(element) }>
+            <button className={ "btn btn-transparent" + className } onClick={ () => onClick(element) }>
                 <span className={ "glyphicon glyphicon-" + icon } />
                 <span>{ title }</span>
-            </a>
+            </button>
         </li>
     )
 };
@@ -51,18 +54,18 @@ class DiffViewer extends Component {
     }
 
     render() {
-        let mapsLink = <MenuLink icon="globe" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
-        let macrosLink = <MenuLink icon="cog" title="Macros" element="macroElements" onClick={ this.onClickMenuLink } />;
-        let servicesLink = <MenuLink icon="transfer" title="Service" element="serviceElements" onClick={ this.onClickMenuLink } />;
-        let flowLink = <MenuLink icon="leaf" title="Flow" element="flow" onClick={ this.onClickMenuLink } />;
-        let pagesLink = <MenuLink icon="th" title="Pages" element="pageElements" onClick={ this.onClickMenuLink } />;
-        let valuesLink = <MenuLink icon="record" title="Values" element="valueElements" onClick={ this.onClickMenuLink } />;
-        let navigationLink = <MenuLink icon="object-align-top" title="Navigations" element="navigationElements" onClick={ this.onClickMenuLink } />;
-        let groupsLink = <MenuLink icon="tasks" title="Groups" element="groupElements" onClick={ this.onClickMenuLink } />;
-        let tagsLink = <MenuLink icon="tags" title="Tags" element="tagElements" onClick={ this.onClickMenuLink } />;
-        let typesLink = <MenuLink icon="option-vertical" title="Types" element="typeElements" onClick={ this.onClickMenuLink } />;
+        let mapsLink = <MenuLink active={ this.state.selectedElementType } icon="globe" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
+        let macrosLink = <MenuLink active={ this.state.selectedElementType } icon="cog" title="Macros" element="macroElements" onClick={ this.onClickMenuLink } />;
+        let servicesLink = <MenuLink active={ this.state.selectedElementType } icon="transfer" title="Service" element="serviceElements" onClick={ this.onClickMenuLink } />;
+        let flowLink = <MenuLink active={ this.state.selectedElementType } icon="leaf" title="Flow" element="flow" onClick={ this.onClickMenuLink } />;
+        let pagesLink = <MenuLink active={ this.state.selectedElementType } icon="th" title="Pages" element="pageElements" onClick={ this.onClickMenuLink } />;
+        let valuesLink = <MenuLink active={ this.state.selectedElementType } icon="record" title="Values" element="valueElements" onClick={ this.onClickMenuLink } />;
+        let navigationLink = <MenuLink active={ this.state.selectedElementType } icon="object-align-top" title="Navigations" element="navigationElements" onClick={ this.onClickMenuLink } />;
+        let groupsLink = <MenuLink active={ this.state.selectedElementType } icon="tasks" title="Groups" element="groupElements" onClick={ this.onClickMenuLink } />;
+        let tagsLink = <MenuLink active={ this.state.selectedElementType } icon="tags" title="Tags" element="tagElements" onClick={ this.onClickMenuLink } />;
+        let typesLink = <MenuLink active={ this.state.selectedElementType } icon="option-vertical" title="Types" element="typeElements" onClick={ this.onClickMenuLink } />;
 
-        let tree;
+        let tree = null;
 
         if (this.state.selectedElementType) {
             tree = (
@@ -77,15 +80,7 @@ class DiffViewer extends Component {
                     </div>
                 </div>
             )
-        } else {
-            tree = (
-                <div>
-
-                </div>
-            );
         }
-
-        console.log('poop', this.state.selectedNodeValue);
 
         return (
             <div className={"container"}>
@@ -109,7 +104,6 @@ class DiffViewer extends Component {
                         </ul>
                     </div>
                     <div className={"col-sm-7"} >
-                        {/*<ChangeProperties visible={this.state.showProperties} closeCallback={this.closeDescription}/>*/}
                         <div>
                             { renderDelta(this.state.selectedNodeValue) }
                         </div>
