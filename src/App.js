@@ -241,7 +241,7 @@ class App extends Component {
         }
 
         return (
-            <div className="container">
+            <div className="container-fluid">
                 <input type="checkbox" data-toggle="toggle" onClick={this.diffRenderToggle} /><label>Activate Viewer</label>
                 <input type="checkbox" data-toggle="toggle" onClick={this.cleanSelected} /><label>Select Snapshot</label>
                 {diffRender}

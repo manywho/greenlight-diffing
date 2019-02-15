@@ -1,11 +1,3 @@
-
-.modified-attributes {
-    margin-top: 20px;
-    width: 80%;
-    border: 1px solid #cccccc;
-}
-
-
 .node-new {
     color: #43ac6a;
 }
@@ -22,26 +14,24 @@
     color: #767676;
 }
 
-/* fix for tree bootstrap */
-ul.rc-tree.fixo .rc-tree-node-content-wrapper {
-    height: 25px;
-
-}
-
-/* layout  */
-.menu-diff li span {
+/* Navigation */
+.navigation.elements li span {
     color: #10639b;
     font-size: 16px;
     margin: 8px;
     width: 24px;
 }
 
-.menu-diff li span a {
+.navigation.elements li.active span {
+    color: #fff;
+}
+
+.navigation.elements li span a {
     font-weight: bold;
     color: #1A489B;
 }
 
-.menu-diff .glyphicon {
+.navigation.elements .glyphicon {
     margin-top: 5px;
     margin-bottom: 4px;
     font-size: 16px;
