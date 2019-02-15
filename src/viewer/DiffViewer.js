@@ -39,7 +39,7 @@ class DiffViewer extends Component {
             selectedElementType: elementType,
             selectedNodeKey: '',
             selectedNodePath: '',
-            selectedNodeValue: []
+            selectedNodeValue: this.props.diff[elementType]
         })
     };
 
@@ -117,7 +117,7 @@ class DiffViewer extends Component {
                     </div>
                     <div className={"col-sm-7"} >
                         <div className="wrap">
-                            { renderDelta(this.state.selectedNodeValue, this.state.selectedNodePath, this.handleCustomElement) }
+                            { renderDelta(this.state.selectedNodeValue, this.state.selectedNodePath, this.props.snapshotA, this.props.snapshotB, this.handleCustomElement) }
                         </div>
                     </div>
                     <div className={"col-sm-3"}>
@@ -133,6 +133,8 @@ class DiffViewer extends Component {
 
         const selectedNodePath = this.state.selectedNodePath; //todo: maybe use rootPath and path combination?
         if(!selectedNodePath) {
+            node.element = <div>No changes detected</div>;
+
             return false;
         }
 

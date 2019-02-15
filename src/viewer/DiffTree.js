@@ -67,9 +67,11 @@ class DiffTree extends Component {
     };
 
     render() {
-        const tree = this.props.selectedElementType
-            ? this.renderTree(this.props.diff[this.props.selectedElementType], this.props.selectedElementType)
-            : <div>nothing selected</div>;
+        const diff = this.props.diff[this.props.selectedElementType];
+
+        const tree = diff
+            ? this.renderTree(diff, this.props.selectedElementType)
+            : <ul><li>No changes</li></ul>;
 
         return (
             <div className="row">

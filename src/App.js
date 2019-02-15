@@ -70,7 +70,7 @@ export function findByPath(root, pathStr) {
     return node;
 }
 
-export function renderDelta(diff, rootPath, handleCustomElement) {
+export function renderDelta(diff, rootPath, snapshotA, snapshotB, handleCustomElement) {
 
     if(!rootPath) {
         rootPath = "";
@@ -141,7 +141,7 @@ export function renderDelta(diff, rootPath, handleCustomElement) {
 
         }
         else {
-            throw new Error("Not expecting that: (typeof item)=" + (typeof item) + ", item=" + item);
+            console.error("Not expecting that: (typeof item)=" + (typeof item) + ", item=" + item);
         }
     }
 
@@ -199,7 +199,7 @@ class App extends Component {
             }
         });
 
-        const originalDiff = diffPatcher.diff(snapshotA, snapshotB);
+        const originalDiff = diffPatcher.diff(this.state.snapshotA, this.state.snapshotB);
 
         const diff = Object.entries(originalDiff).reduce((output, [key, value]) => {
             if (key.toLowerCase().includes('elements')) {
@@ -213,7 +213,7 @@ class App extends Component {
 
 
         // Render all the differences into a set of React elements
-        const elements = renderDelta(diff, "", (node, path, key, item, rootPath) => {
+        const elements = renderDelta(diff, "", this.state.snapshotA, this.state.snapshotB, (node, path, key, item, rootPath) => {
             let shouldContinue = false;
 
             if (path.startsWith(".mapElements.")) {
@@ -221,11 +221,11 @@ class App extends Component {
 
                 shouldContinue = true;
             } else if (path.startsWith(".macroElements.")) {
-                node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
+                node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={this.state.snapshotA} snapshotB={this.state.snapshotB} />;
 
                 shouldContinue = true;
             } else if (path.startsWith(".serviceElements.")) {
-                node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
+                node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={this.state.snapshotA} snapshotB={this.state.snapshotB} />;
 
                 shouldContinue = true;
             }
@@ -237,7 +237,7 @@ class App extends Component {
         if (this.state.viewer === false) {
             diffRender = elements;
         } else {
-            diffRender = <DiffViewer diff={ diff } snapshotA={ this.state.snapshotA } snapshotB={ this.state.snapshotB } targetTitle={snapshotB.developerName} sourceDate={snapshotA.dateModified} targetDate={snapshotB.dateModified}/>
+            diffRender = <DiffViewer diff={ diff } snapshotA={ this.state.snapshotA } snapshotB={ this.state.snapshotB } targetTitle={this.state.snapshotB.developerName} sourceDate={this.state.snapshotA.dateModified} targetDate={this.state.snapshotB.dateModified}/>
         }
 
         return (
