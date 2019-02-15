@@ -52,7 +52,7 @@ class DiffViewer extends Component {
     };
 
     simplifyDate = (dateString) => {
-        return <Moment format="D MMM YYYY hh:mm" withTitle>{dateString}</Moment>
+        return <Moment format="D MMM YYYY hh:mm">{ dateString }</Moment>
     };
 
     render() {
@@ -86,9 +86,17 @@ class DiffViewer extends Component {
 
         return (
             <div className={"container-fluid"}>
-                <div className={"row"}>
-                    <div className={"col-sm-6"}><h3>{this.props.targetTitle}</h3></div>
-                    <div className={"col-sm-6"}><h3 style={{textAlign: "right"}}>{this.simplifyDate(this.props.sourceDate)} compared to {this.simplifyDate(this.props.targetDate)}</h3></div>
+                <div className="page-header">
+                    <div className={"row"}>
+                        <div className="col-sm-12">
+                            <h2>
+                                {this.props.targetTitle} <small><abbr title={ this.props.snapshotA.id.versionId }>{ this.simplifyDate(this.props.sourceDate) }</abbr> to <abbr title={ this.props.snapshotB.id.versionId }>{ this.simplifyDate(this.props.targetDate) }</abbr></small>
+                            </h2>
+                        </div>
+                        <div className="col-sm-6 text-right">
+
+                        </div>
+                    </div>
                 </div>
                 <div className={"row"}>
                     <div className={"col-sm-2"}>

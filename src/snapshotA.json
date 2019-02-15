@@ -16,7 +16,7 @@
   "developerName": "New Flow",
   "developerSummary": "",
   "editingToken": null,
-  "groupElements": null,
+  "groupElements": [],
   "id": {
     "id": "ce99a5a6-d9ce-4763-99fc-73d5e5494051",
     "versionId": "b13e3d11-aa2e-4bc4-aa2e-572a7c6fe3f1"
@@ -178,9 +178,9 @@
       "y": 250
     }
   ],
-  "navigationElements": null,
-  "pageElements": null,
-  "restrictions": null,
+  "navigationElements": [],
+  "pageElements": [],
+  "restrictions": [],
   "serviceElements": [
     {
       "actions": [
@@ -340,9 +340,9 @@
   ],
   "startMapElementId": "b2e0de38-680d-47de-a60e-81c30f607c1a",
   "stateExpirationLength": 0,
-  "tagElements": null,
-  "typeElements": null,
-  "valueElements": null,
+  "tagElements": [],
+  "typeElements": [],
+  "valueElements": [],
   "whoCreated": {
     "email": "jonjo@jonjomckay.com",
     "firstName": "Jonjo",
