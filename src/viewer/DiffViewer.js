@@ -28,11 +28,17 @@ const MenuLink = ({ active, element, icon, onClick, title }) => {
 class DiffViewer extends Component {
 
     state = {
-        selectedElementType: '',
+        selectedElementType: 'flow',
         selectedNodeKey: '',
-        selectedNodePath: '',
+        selectedNodePath: 'flow',
         selectedNodeValue: []
     };
+
+    componentDidMount() {
+        this.setState({
+            selectedNodeValue: this.props.diff
+        });
+    }
 
     onClickMenuLink = (elementType) => {
         this.setState({

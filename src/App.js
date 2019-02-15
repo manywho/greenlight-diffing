@@ -151,9 +151,9 @@ export function renderDelta(diff, rootPath, snapshotA, snapshotB, handleCustomEl
 
 class App extends Component {
     state = {
-        snapshotA: undefined,
-        snapshotB: undefined,
-        viewer: false
+        snapshotA: snapshotA,
+        snapshotB: snapshotB,
+        viewer: true
     };
 
     componentDidMount() {
@@ -174,13 +174,13 @@ class App extends Component {
     };
 
     cleanSelected = () => {
-        this.setSource(undefined);
-        this.setTarget(undefined);
+        this.setSource(null);
+        this.setTarget(null);
     };
 
     render() {
 
-        if (this.state.snapshotA === undefined || this.state.snapshotB === undefined) {
+        if (this.state.snapshotA === null || this.state.snapshotB === null) {
             return <div className={"container"}>
                             <SnapSelector setSource={this.setSource} setTarget={this.setTarget} cleanSelected={this.cleanSelected}/>
                    </div>
@@ -242,8 +242,6 @@ class App extends Component {
 
         return (
             <div className="container-fluid">
-                <input type="checkbox" data-toggle="toggle" onClick={this.diffRenderToggle} /><label>Activate Viewer</label>
-                <input type="checkbox" data-toggle="toggle" onClick={this.cleanSelected} /><label>Select Snapshot</label>
                 {diffRender}
             </div>
         );
