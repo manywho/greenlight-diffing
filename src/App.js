@@ -110,7 +110,7 @@ export function renderDelta(diff, rootPath, handleCustomElement) {
                     break;
                 case 2:
                     // We're modifying
-                    node.element = (<ElementModification item={item} key={key} path={key}/>);
+                    node.element = (<ElementModification item={item} key={key} rootPath={rootPath} relPath={path} />);
                     break;
                 case 3:
                     // We're deleting
@@ -217,7 +217,7 @@ class App extends Component {
             let shouldContinue = false;
 
             if (path.startsWith(".mapElements.")) {
-                node.element = <MapElement item={item} key={key} path={path}/>;
+                node.element = <MapElement item={item} key={key} elementTypeName="Map Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
 
                 shouldContinue = true;
             } else if (path.startsWith(".macroElements.")) {

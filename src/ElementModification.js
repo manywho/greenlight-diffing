@@ -1,11 +1,27 @@
 import React from 'react';
 import { createPrettyPathName } from './Paths';
 
-const ElementModification = ({ path, item }) => (
-    <div className="bg-info wrap">
-        changed <i>{ createPrettyPathName(path) }</i> from <strong>{ renderChange(item[0]) }</strong> to <strong>{ renderChange(item[1]) }</strong>
-    </div>
-);
+const ElementModification = (({item, key, rootPath, relPath}) => {
+
+    console.log(`ElementModification.render, item=${item} key=${key} rootPath=${rootPath} relPath=${relPath}`);
+
+    return (
+            <table className="bg-info table wrap">
+                <thead>
+                <tr>
+                    <th>Source value</th>
+                    <th>Target value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{renderChange(item[0])}</td>
+                    <td>{renderChange(item[1])}</td>
+                </tr>
+                </tbody>
+            </table>
+    );
+});
 
 function renderChange(value) {
     if (value === null) {
