@@ -16,6 +16,7 @@ import MapElement from "./MapElement";
 import MacroElement from "./MacroElement";
 import ServiceElement from "./ServiceElement";
 import DiffViewer from "./viewer/DiffViewer";
+import SnapSelector from "./snapselector/SnapSelector";
 
 function findNode(root, index) {
 
@@ -149,8 +150,8 @@ export function renderDelta(diff, rootPath, handleCustomElement) {
 
 class App extends Component {
     state = {
-        snapshotA: snapshotA,
-        snapshotB: snapshotB,
+        snapshotA: undefined,
+        snapshotB: undefined,
         viewer: false
     };
 
@@ -163,7 +164,27 @@ class App extends Component {
         this.setState({viewer: newState});
     };
 
+    setSource = (snapshotSource) => {
+        this.setState({snapshotA: snapshotSource});
+    };
+
+    setTarget = (snapshotTarget) => {
+        this.setState({snapshotB: snapshotTarget});
+    };
+
+    cleanSelected = () => {
+        this.setSource(undefined);
+        this.setTarget(undefined);
+    };
+
     render() {
+
+        if (this.state.snapshotA === undefined || this.state.snapshotB === undefined) {
+            return <div className={"container"}>
+                            <SnapSelector setSource={this.setSource} setTarget={this.setTarget} cleanSelected={this.cleanSelected}/>
+                   </div>
+        }
+
         const diffPatcher = new DiffPatcher({
             objectHash: function (obj) {
                 // We want to hash the objects by ID, if there is a field called "id"
