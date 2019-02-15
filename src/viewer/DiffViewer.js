@@ -3,8 +3,9 @@ import '../App.css';
 import './DiffViewer.css';
 import 'rc-tree/assets/index.css';
 import DiffTree from "./DiffTree";
+import Moment from 'react-moment';
 import { createPrettyPathName } from "../Paths";
-import {renderDelta} from "../App";
+import { renderDelta } from "../App";
 
 const MenuLink = ({ active, element, icon, onClick, title }) => {
     const className = active === element
@@ -43,8 +44,7 @@ class DiffViewer extends Component {
     };
 
     simplifyDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.getFullYear() + "-" + date.getMonth() + "-"+ date.getDay()+ " "+ date.getHours() +":"+date.getMinutes();
+        return <Moment format="D MMM YYYY hh:mm" withTitle>{dateString}</Moment>
     }
 
     render() {
