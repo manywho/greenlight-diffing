@@ -43,11 +43,11 @@ class DiffTree extends Component {
 
         switch (determineChangeType(value)) {
             case CHANGE_ADDITION:
-                return <TreeNode name={ key } title={ title } className="node-new" value={ value } />;
+                return <TreeNode key={ index } name={ key } title={ title } className="node-new" value={ value } />;
             case CHANGE_DELETION:
-                return <TreeNode name={ key } title={ title } className="node-deleted" value={ value } />;
+                return <TreeNode key={ index } name={ key } title={ title } className="node-deleted" value={ value } />;
             case CHANGE_MODIFICATION:
-                return <TreeNode name={ key } title={ title } className="node-modified" value={ value } />;
+                return <TreeNode key={ index } name={ key } title={ title } className="node-modified" value={ value } />;
             case CHANGE_UNKNOWN:
                 return null;
             default:
@@ -58,7 +58,7 @@ class DiffTree extends Component {
                     });
 
                     return (
-                        <TreeNode name={ key } title={ key } value={ value }>
+                        <TreeNode key={ index } name={ key } title={ key } value={ value }>
                             { tree }
                         </TreeNode>
                     )
@@ -68,7 +68,7 @@ class DiffTree extends Component {
                     });
 
                     return (
-                        <TreeNode name={ key } title={ index } className="node-modified" value={ value }>
+                        <TreeNode key={ index } name={ key } title={ index } className="node-modified" value={ value }>
                             { tree }
                         </TreeNode>
 
