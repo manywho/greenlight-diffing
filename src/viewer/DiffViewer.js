@@ -71,7 +71,7 @@ class DiffViewer extends Component {
                 <div className="viewer">
                     <h4 className="title">{ createPrettyPathName(this.state.selectedElementType) } Modifications</h4>
 
-                    <DiffTree diff={ this.props.diff } onClickNode={ this.onClickNode } selectedElementType={ this.state.selectedElementType } />
+                    <DiffTree diff={ this.props.diff } onClickNode={ this.onClickNode } selectedElementType={ this.state.selectedElementType } snapshotA={ this.props.snapshotA } snapshotB={ this.props.snapshotB } />
 
                     <div>
                         <p>The differences in the snapshots are shown as follow: <span className={"node-modified"}>Modified Node</span>, <span className={"node-new"}>New Node</span> and <span className={"node-deleted"}>Deleted Node</span>.

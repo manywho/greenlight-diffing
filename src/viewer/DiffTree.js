@@ -4,7 +4,7 @@ import './DiffViewer.css';
 import 'rc-tree/assets/index.css';
 import Tree, { TreeNode } from 'rc-tree';
 import { CHANGE_ADDITION, CHANGE_DELETION, CHANGE_MODIFICATION, CHANGE_UNKNOWN, determineChangeType } from '../Diffs';
-import { createPrettyPathName } from "../Paths";
+import { createPrettyPathName, findName } from "../Paths";
 
 class DiffTree extends Component {
     state = {
@@ -17,15 +17,13 @@ class DiffTree extends Component {
     };
 
     renderChangeType = (key, value, index, path) => {
-        const title = createPrettyPathName(key);
-
         switch (determineChangeType(value)) {
             case CHANGE_ADDITION:
-                return <TreeNode key={ path } name={ key } title={ title } className="node-new" value={ value } />;
+                return <TreeNode key={ path } name={ key } title={ findName(this.props.snapshotB, path) } className="node-new" value={ value } />;
             case CHANGE_DELETION:
-                return <TreeNode key={ path } name={ key } title={ title } className="node-deleted" value={ value } />;
+                return <TreeNode key={ path } name={ key } title={ findName(this.props.snapshotA, path) } className="node-deleted" value={ value } />;
             case CHANGE_MODIFICATION:
-                return <TreeNode key={ path } name={ key } title={ title } className="node-modified" value={ value } />;
+                return <TreeNode key={ path } name={ key } title={ findName(this.props.snapshotA, path) } className="node-modified" value={ value } />;
             case CHANGE_UNKNOWN:
                 return null;
             default:
