@@ -167,6 +167,20 @@ class DiffViewer extends Component {
             node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
             return true;
         }
+        else if (selectedNodePath.match(/^serviceElements$/)) {
+
+            const childElements = [];
+            for (let index in item) {
+                childElements.push(<ServiceElement item={item[index]} key={key} elementTypeName="Service Element"
+                                                 rootPath={rootPath} relPath={path} snapshotA={snapshotA}
+                                                 snapshotB={snapshotB}/>);
+            }
+
+            node.element = <div>{childElements}</div>;
+
+            return true;
+
+        }
         else if (selectedNodePath.match(/^mapElements\.[_]?\d$/)) {
             node.element = <MapElement item={item} key={key} elementTypeName="Map Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
             return true;
