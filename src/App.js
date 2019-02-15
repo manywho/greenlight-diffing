@@ -69,6 +69,11 @@ export function findByPath(root, pathStr) {
 }
 
 export function renderDelta(diff, rootPath, handleCustomElement) {
+
+    if(!rootPath) {
+        rootPath = "";
+    }
+
     const queue = [{path: "", key: "", item: diff, treeIndex: []}];
     const rootNode = {level: 0, children: []};
 
