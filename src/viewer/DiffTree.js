@@ -39,8 +39,6 @@ class DiffTree extends Component {
     };
 
     renderChangeType = (key, value, index) => {
-        console.error(key, index);
-
         const title = createPrettyPathName(key);
 
         switch (determineChangeType(value)) {
@@ -51,7 +49,6 @@ class DiffTree extends Component {
             case CHANGE_MODIFICATION:
                 return <TreeNode name={ key } title={ title } className="node-modified" value={ value } />;
             case CHANGE_UNKNOWN:
-                // console.log('unknown', key, value);
                 return null;
             default:
                 if (value._t === "a") {
@@ -81,8 +78,6 @@ class DiffTree extends Component {
     };
 
     renderTree = (diff, selectedElementType) => {
-        console.warn(diff);
-
         let nodes;
         if (diff instanceof Array) {
             nodes = this.renderChangeType(selectedElementType, diff, 0);

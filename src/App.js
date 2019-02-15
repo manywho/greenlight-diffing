@@ -10,8 +10,6 @@ import ElementAddition from "./ElementAddition";
 import ElementModification from "./ElementModification";
 import ElementDeletion from "./ElementDeletion";
 import ElementUnknown from "./ElementUnknown";
-import { createPrettyPathName } from "./Paths";
-import { pluralise } from "./Strings";
 import MapElement from "./MapElement";
 import MacroElement from "./MacroElement";
 import ServiceElement from "./ServiceElement";
@@ -33,7 +31,7 @@ function createElementTree(node) {
     if(node.children.length > 0) {
         const childElements = node.children.map((child) => createElementTree(child));
         return (
-            <div>
+            <div key={ node.path }>
                 <h3>{node.path}</h3>
                 <ul>
                     {childElements}
@@ -177,7 +175,18 @@ class App extends Component {
             }
         });
 
-        const diff = diffPatcher.diff(snapshotA, snapshotB);
+        const originalDiff = diffPatcher.diff(snapshotA, snapshotB);
+
+        const diff = Object.entries(originalDiff).reduce((output, [key, value]) => {
+            if (key.toLowerCase().includes('elements')) {
+                output[key] = value;
+            } else {
+                output.flow[key] = value;
+            }
+
+            return output;
+        }, { flow: {} });
+
 
         // Render all the differences into a set of React elements
         const elements = renderDelta(diff, "", (node, path, key, item, rootPath) => {
