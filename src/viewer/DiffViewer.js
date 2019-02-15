@@ -124,6 +124,9 @@ class DiffViewer extends Component {
         // console.log(`DiffViewer.handleCustomElement: selectedNodePath=${this.state.selectedNodePath} rootPath=${rootPath} path=${path} key=${key} item=${JSON.stringify(item)}`);
 
         const selectedNodePath = this.state.selectedNodePath; //todo: maybe use rootPath and path combination?
+        if(!selectedNodePath) {
+            return false;
+        }
 
         if (selectedNodePath.match(/^macroElements\.[_]?\d$/)) {
             node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
@@ -133,14 +136,13 @@ class DiffViewer extends Component {
             node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
             return true;
         }
+        else if (selectedNodePath.match(/^mapElements\.[_]?\d$/)) {
+            node.element = <MapElement item={item} key={key} path={path}/>;
+            return true;
+        }
         else {
             return false;
         }
-        /*switch () {
-            case 'mapElements':
-                node.element = <MapElement item={item} key={key} path={path}/>;
-                return true;
-        }*/
     }
 }
 
