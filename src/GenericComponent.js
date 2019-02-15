@@ -14,12 +14,18 @@ export function genericComponent(handleCustomElement, validateRootElement) {
 
     return class extends React.Component {
         state = {
-            isCollapsed: true
+            isCollapsed: { "no-key" : false }
         };
 
-        onToggleCollapse = () => {
-            this.setState({
-                isCollapsed: !this.state.isCollapsed
+        onToggleCollapse = (key) => {
+            this.setState((prevState) => {
+
+                const isCollapsedCopy = Object.assign({}, prevState.isCollapsed);
+                isCollapsedCopy[key] = !prevState.isCollapsed[key];
+
+                return {
+                    isCollapsed: isCollapsedCopy
+                }
             });
         };
 
@@ -31,7 +37,7 @@ export function genericComponent(handleCustomElement, validateRootElement) {
         renderElement(item, elementKey) {
             const panelBodyClasses = classNames({
                 'collapse': true,
-                'in': this.state.isCollapsed,
+                'in': this.state.isCollapsed[elementKey],
                 'panel-body': true,
                 'panel-collapse': true
             });
@@ -111,7 +117,7 @@ export function genericComponent(handleCustomElement, validateRootElement) {
                         <div className="panel-heading" role="tab">
                             <h3 className="panel-title">
                                 <a role="button" data-toggle="collapse" aria-expanded="false"
-                                   onClick={this.onToggleCollapse}>
+                                   onClick={e => this.onToggleCollapse(elementKey)}>
                                     {elementTypeName}: <strong>{name}</strong>
                                 </a>
 
