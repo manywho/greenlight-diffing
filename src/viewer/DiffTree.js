@@ -13,40 +13,40 @@ class DiffTree extends Component {
     };
 
     onClickNode = (keys, e) => {
-        this.props.onClickNode(e.node.props.name, e.node.props.value);
+        this.props.onClickNode(e.node.props.name, e.node.props.value, keys[0]);
     };
 
-    renderChangeType = (key, value, index) => {
+    renderChangeType = (key, value, index, path) => {
         const title = createPrettyPathName(key);
 
         switch (determineChangeType(value)) {
             case CHANGE_ADDITION:
-                return <TreeNode key={ index } name={ key } title={ title } className="node-new" value={ value } />;
+                return <TreeNode key={ path } name={ key } title={ title } className="node-new" value={ value } />;
             case CHANGE_DELETION:
-                return <TreeNode key={ index } name={ key } title={ title } className="node-deleted" value={ value } />;
+                return <TreeNode key={ path } name={ key } title={ title } className="node-deleted" value={ value } />;
             case CHANGE_MODIFICATION:
-                return <TreeNode key={ index } name={ key } title={ title } className="node-modified" value={ value } />;
+                return <TreeNode key={ path } name={ key } title={ title } className="node-modified" value={ value } />;
             case CHANGE_UNKNOWN:
                 return null;
             default:
                 if (value._t === "a") {
                     // Excluding _t here seems weird...
                     const tree = Object.entries(value).filter(([innerKey]) => innerKey !== "_t").map(([innerKey, innerValue], innerIndex) => {
-                        return this.renderChangeType(key, innerValue, innerIndex);
+                        return this.renderChangeType(key, innerValue, innerIndex, path + "." + innerKey);
                     });
 
                     return (
-                        <TreeNode key={ index } name={ key } title={ key } value={ value }>
+                        <TreeNode key={ path } name={ key } title={ key } value={ value }>
                             { tree }
                         </TreeNode>
                     )
                 } else {
                     const tree = Object.entries(value).filter(([innerKey]) => innerKey !== "_t").map(([innerKey, innerValue], innerIndex) => {
-                        return this.renderChangeType(innerKey, innerValue, innerIndex);
+                        return this.renderChangeType(innerKey, innerValue, innerIndex, path + "." + innerKey);
                     });
 
                     return (
-                        <TreeNode key={ index } name={ key } title={ index } className="node-modified" value={ value }>
+                        <TreeNode key={ path } name={ key } title={ index } className="node-modified" value={ value }>
                             { tree }
                         </TreeNode>
 
@@ -58,10 +58,10 @@ class DiffTree extends Component {
     renderTree = (diff, selectedElementType) => {
         let nodes;
         if (diff instanceof Array) {
-            nodes = this.renderChangeType(selectedElementType, diff, 0);
+            nodes = this.renderChangeType(selectedElementType, diff, 0, selectedElementType);
         } else {
             nodes = Object.entries(diff).filter(([innerKey]) => innerKey !== "_t").map(([key, value], index) => {
-                return this.renderChangeType(key, value, index);
+                return this.renderChangeType(key, value, index, selectedElementType + '.' + key);
             });
         }
 

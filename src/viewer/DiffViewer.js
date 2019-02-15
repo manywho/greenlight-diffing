@@ -27,6 +27,7 @@ class DiffViewer extends Component {
     state = {
         selectedElementType: '',
         selectedNodeKey: '',
+        selectedNodePath: '',
         selectedNodeValue: []
     };
 
@@ -34,20 +35,22 @@ class DiffViewer extends Component {
         this.setState({
             selectedElementType: elementType,
             selectedNodeKey: '',
+            selectedNodePath: '',
             selectedNodeValue: []
         })
     };
 
-    onClickNode = (key, value) => {
+    onClickNode = (key, value, path) => {
         this.setState({
             selectedNodeKey: key,
+            selectedNodePath: path,
             selectedNodeValue: value
         })
     };
 
     simplifyDate = (dateString) => {
         return <Moment format="D MMM YYYY hh:mm" withTitle>{dateString}</Moment>
-    }
+    };
 
     render() {
         let mapsLink = <MenuLink active={ this.state.selectedElementType } icon="globe" title="Maps" element="mapElements" onClick={ this.onClickMenuLink } />;
