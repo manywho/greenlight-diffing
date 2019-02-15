@@ -46,7 +46,10 @@ function createElementTree(node) {
 
 export function findByPath(root, pathStr) {
 
-    const path = pathStr.substring(1).split(".");
+    if(pathStr.startsWith("."))
+        pathStr = pathStr.substring(1);
+
+    const path = pathStr.split(".");
 
     // console.log("findByPath, path=");
     // console.log(path);

@@ -6,6 +6,9 @@ import DiffTree from "./DiffTree";
 import Moment from 'react-moment';
 import { createPrettyPathName } from "../Paths";
 import { renderDelta } from "../App";
+import MapElement from "../MapElement";
+import MacroElement from "../MacroElement";
+import ServiceElement from "../ServiceElement";
 
 const MenuLink = ({ active, element, icon, onClick, title }) => {
     const className = active === element
@@ -104,7 +107,7 @@ class DiffViewer extends Component {
                     </div>
                     <div className={"col-sm-7"} >
                         <div>
-                            { renderDelta(this.state.selectedNodeValue) }
+                            { renderDelta(this.state.selectedNodeValue, this.state.selectedNodePath, this.handleCustomElement) }
                         </div>
                     </div>
                     <div className={"col-sm-3"}>
@@ -113,6 +116,32 @@ class DiffViewer extends Component {
                 </div>
             </div>
         );
+    }
+
+    handleCustomElement = (node, path, key, item, rootPath, snapshotA, snapshotB) => {
+        // console.log(`DiffViewer.handleCustomElement: selectedNodePath=${this.state.selectedNodePath} rootPath=${rootPath} path=${path} key=${key} item=${JSON.stringify(item)}`);
+
+        //todo: maybe use rootPath and path combination?
+        const selectedNodePath = this.state.selectedNodePath;
+
+        if(selectedNodePath.match(/^macroElements\.[_]?\d$/)) {
+            node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
+            return true;
+        } else {
+            return false;
+        }
+        /*switch () {
+            case 'mapElements':
+                node.element = <MapElement item={item} key={key} path={path}/>;
+                return true;
+            case 'macroElements':
+
+            case 'serviceElements':
+                node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
+                return true;
+            default:
+                return false;
+        }*/
     }
 }
 
