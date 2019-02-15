@@ -106,7 +106,7 @@ class DiffViewer extends Component {
                         </ul>
                     </div>
                     <div className={"col-sm-7"} >
-                        <div>
+                        <div className="wrap">
                             { renderDelta(this.state.selectedNodeValue, this.state.selectedNodePath, this.handleCustomElement) }
                         </div>
                     </div>
@@ -121,26 +121,23 @@ class DiffViewer extends Component {
     handleCustomElement = (node, path, key, item, rootPath, snapshotA, snapshotB) => {
         // console.log(`DiffViewer.handleCustomElement: selectedNodePath=${this.state.selectedNodePath} rootPath=${rootPath} path=${path} key=${key} item=${JSON.stringify(item)}`);
 
-        //todo: maybe use rootPath and path combination?
-        const selectedNodePath = this.state.selectedNodePath;
+        const selectedNodePath = this.state.selectedNodePath; //todo: maybe use rootPath and path combination?
 
-        if(selectedNodePath.match(/^macroElements\.[_]?\d$/)) {
-            node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
+        if (selectedNodePath.match(/^macroElements\.[_]?\d$/)) {
+            node.element = <MacroElement item={item} key={key} elementTypeName="Macro Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
             return true;
-        } else {
+        }
+        else if (selectedNodePath.match(/^serviceElements\.[_]?\d$/)) {
+            node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB}/>;
+            return true;
+        }
+        else {
             return false;
         }
         /*switch () {
             case 'mapElements':
                 node.element = <MapElement item={item} key={key} path={path}/>;
                 return true;
-            case 'macroElements':
-
-            case 'serviceElements':
-                node.element = <ServiceElement item={item} key={key} elementTypeName="Service Element" rootPath={rootPath} relPath={path} snapshotA={snapshotA} snapshotB={snapshotB} />;
-                return true;
-            default:
-                return false;
         }*/
     }
 }
