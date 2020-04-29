@@ -9,7 +9,7 @@
     "lodash.get": "^4.4.2",
     "moment": "^2.24.0",
     "rc-tree": "^1.14.9",
-    "react": "^16.8.1",
+    "react": "^16.13.1",
     "react-dom": "^16.8.1",
     "react-moment": "^0.8.4",
     "react-scripts": "2.1.4"
