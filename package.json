@@ -11,7 +11,7 @@
     "rc-tree": "^1.14.9",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
-    "react-moment": "^0.8.4",
+    "react-moment": "^0.9.7",
     "react-scripts": "2.1.4"
   },
   "scripts": {
